@@ -5,6 +5,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'widgets/login_text_field.dart';
+import 'widgets/login_with_button.dart';
+
 class LoginScreen extends StatelessWidget {
   static String id = 'LoginScreen';
   final usernameController = TextEditingController();
@@ -33,12 +36,12 @@ class LoginScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              LoginTextfield(
+              LoginTextField(
                 usernameController: usernameController,
                 hint: 'Tài khoản',
                 preIcon: FontAwesomeIcons.user,
               ),
-              LoginTextfield(
+              LoginTextField(
                 usernameController: passwordController,
                 hint: 'Mật khẩu',
                 preIcon: Icons.lock_outline_rounded,
@@ -147,87 +150,6 @@ class LoginScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class LoginWithButton extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final Color color;
-  final Color iconColor;
-  final bool isOutLine;
-  final Color textColor;
-  const LoginWithButton({
-    @required this.icon,
-    @required this.text,
-    @required this.color,
-    @required this.isOutLine,
-    @required this.iconColor,
-    @required this.textColor,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: ElevatedButton.icon(
-        icon: Icon(
-          icon,
-          color: iconColor,
-        ),
-        onPressed: () {
-          //TODO google login
-        },
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: isOutLine
-                  ? BorderSide(color: Colors.black54)
-                  : BorderSide.none),
-          minimumSize: Size(300, 46),
-          primary: color,
-        ),
-        label: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LoginTextfield extends StatelessWidget {
-  final String hint;
-  final IconData preIcon;
-
-  final TextEditingController usernameController;
-
-  const LoginTextfield({
-    @required this.hint,
-    @required this.preIcon,
-    @required this.usernameController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-      child: TextField(
-        controller: usernameController,
-        decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(preIcon),
-            suffixIcon: IconButton(
-              onPressed: () => usernameController.clear(),
-              icon: Icon(Icons.clear),
-            )),
       ),
     );
   }
