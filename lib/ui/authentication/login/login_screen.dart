@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'widgets/big_button.dart';
 import 'widgets/login_text_field.dart';
 import 'widgets/login_with_button.dart';
 
@@ -26,51 +27,26 @@ class LoginScreen extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                 ),
               ),
-              Text(
-                'DailyRunning',
-                style: TextStyle(
-                  fontFamily: 'SpringBlueVinyl',
-                  fontSize: 36,
-                ),
-              ),
+              kAppNameText,
               SizedBox(
                 height: 10,
               ),
               LoginTextField(
-                usernameController: usernameController,
+                textController: usernameController,
                 hint: 'Tài khoản',
                 preIcon: FontAwesomeIcons.user,
               ),
               LoginTextField(
-                usernameController: passwordController,
+                textController: passwordController,
                 hint: 'Mật khẩu',
                 preIcon: Icons.lock_outline_rounded,
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 18, horizontal: 30),
-                child: ElevatedButton(
-                  onPressed: () {
-                    //TODO: login click
-                  },
-                  child: Text(
-                    'Đăng nhập',
-                    style: TextStyle(
-                      fontFamily: 'RobotoRegular',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 46),
-                    primary: kPrimaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(18),
-                      ),
-                    ),
-                  ),
-                ),
+              BigButton(
+                horizontalPadding: 30,
+                text: 'Đăng nhập',
+                onClick: () {
+                  //TODO: login click
+                },
               ),
               RichText(
                 text: TextSpan(

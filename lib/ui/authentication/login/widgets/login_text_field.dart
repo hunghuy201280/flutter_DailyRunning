@@ -4,12 +4,12 @@ class LoginTextField extends StatelessWidget {
   final String hint;
   final IconData preIcon;
 
-  final TextEditingController usernameController;
+  final TextEditingController textController;
 
   const LoginTextField({
     @required this.hint,
     @required this.preIcon,
-    @required this.usernameController,
+    @required this.textController,
   });
 
   @override
@@ -17,12 +17,13 @@ class LoginTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: TextField(
-        controller: usernameController,
+        textAlign: TextAlign.center,
+        controller: textController,
         decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(preIcon),
             suffixIcon: IconButton(
-              onPressed: () => usernameController.clear(),
+              onPressed: () => textController.clear(),
               icon: Icon(Icons.clear),
             )),
       ),
