@@ -1,4 +1,5 @@
 import 'package:daily_running/main.dart';
+import 'package:daily_running/ui/home/widgets/post_view.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,113 +14,21 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         body: DefaultTabController(
           length: 2,
-          child: CustomScrollView(
-            slivers: [
-              SliverPersistentHeader(
-                  floating: true,
-                  delegate: CustomCollapseAppbarDelegate(expandedHeight: 150)),
-              SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 24, horizontal: 25),
-                  padding:
-                      EdgeInsets.only(top: 8, bottom: 16, right: 24, left: 24),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kConcreteColor,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(
-                                'assets/images/place_holder_avatar.png'),
-                            radius: 22,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Trung Hiếu',
-                                style: kPostTextStyle.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              Text(
-                                '2020-20-20 20:20',
-                                style: kPostTextStyle,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 14,
-                      ),
-                      Text(
-                        'Mô tả',
-                        style: kPostTextStyle.copyWith(fontSize: 16),
-                      ),
-                      Divider(
-                        color: kDividerColor,
-                        thickness: 1,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          PostColumnText(
-                            value: '20Km',
-                            description: 'Quãng đường',
-                          ),
-                          PostColumnText(
-                            value: '20 phút',
-                            description: 'Thời gian',
-                          ),
-                          PostColumnText(
-                            value: '20 m/ph',
-                            description: 'Tốc độ',
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Image(
-                        image: AssetImage(
-                          'assets/images/place_holder_post.png',
-                        ),
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Row(
-                        children: [
-                          PostBottomIcon(
-                            iconName: 'assets/images/ic_heart.svg',
-                            value: 20.toString(),
-                          ),
-                          SizedBox(
-                            width: 22,
-                          ),
-                          PostBottomIcon(
-                            iconName: 'assets/images/ic_comment.svg',
-                            value: 20.toString(),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }, childCount: 10)),
-            ],
+          child: NestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, isScroll) {
+              return [
+                SliverPersistentHeader(
+                    delegate:
+                        CustomCollapseAppbarDelegate(expandedHeight: 150)),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                PostListView(),
+                PostListView(),
+              ],
+            ),
           ),
         ),
       ),
@@ -127,64 +36,40 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class PostBottomIcon extends StatelessWidget {
-  final String iconName;
-  final String value;
-
-  const PostBottomIcon({
-    @required this.iconName,
-    @required this.value,
-  });
-
+class PostListView extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        InkWell(
-          child: SvgPicture.asset(
-            iconName,
-            height: 13,
-          ),
-          onTap: () {},
-        ),
-        SizedBox(
-          width: 4,
-        ),
-        Text(
-          value,
-          style: kPostTextStyle.copyWith(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: kDividerColor,
-          ),
-        )
-      ],
-    );
-  }
+  _PostListViewState createState() => _PostListViewState();
 }
 
-class PostColumnText extends StatelessWidget {
-  final String value;
-  final String description;
-
-  const PostColumnText({@required this.value, @required this.description});
-
+class _PostListViewState extends State<PostListView>
+    with AutomaticKeepAliveClientMixin<PostListView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: kPostTextStyle.copyWith(
-              fontSize: 12, fontWeight: FontWeight.w700),
-        ),
-        Text(
-          description,
-          style: kPostTextStyle,
-        ),
-      ],
+    super.build(context);
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        return PostView(
+          avatar: AssetImage('assets/images/place_holder_avatar.png'),
+          ownerName: 'Trung Hiếu',
+          dateTime: '2020-20-20 20:20',
+          description:
+              'This is description This is description This is description',
+          distance: 20.12313,
+          timeWorking: 20.2,
+          pace: 20.3,
+          mapImage: AssetImage(
+            'assets/images/place_holder_post.png',
+          ),
+          like: 20,
+          comment: 20,
+        );
+      },
+      itemCount: 10,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
@@ -213,7 +98,7 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
           top: top,
           left: 66,
           right: 66,
-          child: buildFloating(shrinkOffset),
+          child: buildFloatingTabBar(shrinkOffset),
         ),
         Positioned(
           child: buildSearchButton(shrinkOffset),
@@ -266,7 +151,7 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
         ),
       );
 
-  Widget buildFloating(double shrinkOffset) => Opacity(
+  Widget buildFloatingTabBar(double shrinkOffset) => Opacity(
         opacity: disappear(shrinkOffset),
         child: Card(
           shape: RoundedRectangleBorder(
