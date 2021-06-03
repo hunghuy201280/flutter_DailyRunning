@@ -35,6 +35,9 @@ dependencies:
   numberpicker: ^2.1.1
   tab_indicator_styler: ^1.0.0
   flutter_svg: ^0.22.0
+  persistent_bottom_nav_bar: ^4.0.2
+  percent_indicator: ^3.0.1
+  flutter_svg_provider: ^0.1.9
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +64,7 @@ flutter:
       fonts:
         - asset: assets/fonts/svn_avo.ttf
         - asset: assets/fonts/svn_avo_bold.ttf
-    - family: SVN Avo
+    - family: RunningIcons
       fonts:
-        - asset: assets/fonts/LoginIcon.ttf
+        - asset: assets/fonts/RunningIcons.ttf
 

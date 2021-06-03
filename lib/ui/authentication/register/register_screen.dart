@@ -25,7 +25,7 @@ class RegisterScreen extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
-                child: kAppNameText,
+                child: kAppNameTextBlack,
               ),
               Container(
                 height: MediaQuery.of(context).size.height - 100,

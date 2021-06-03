@@ -101,7 +101,7 @@ class RegisterUpdateInfo extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Center(child: kAppNameText),
+              Center(child: kAppNameTextBlack),
               SizedBox(
                 height: 10,
               ),

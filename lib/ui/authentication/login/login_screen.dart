@@ -1,4 +1,4 @@
-import 'package:daily_running/utils/app_icon.dart';
+import 'package:daily_running/utils/running_icons.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -27,19 +27,19 @@ class LoginScreen extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                 ),
               ),
-              kAppNameText,
+              kAppNameTextBlack,
               SizedBox(
                 height: 10,
               ),
               LoginTextField(
                 textController: usernameController,
                 hint: 'Tài khoản',
-                preIcon: FontAwesomeIcons.user,
+                preIcon: RunningIcons.profile,
               ),
               LoginTextField(
                 textController: passwordController,
                 hint: 'Mật khẩu',
-                preIcon: Icons.lock_outline_rounded,
+                preIcon: RunningIcons.lock,
               ),
               BigButton(
                 horizontalPadding: 30,

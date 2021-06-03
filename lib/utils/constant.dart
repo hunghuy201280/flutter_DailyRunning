@@ -8,6 +8,7 @@ const kFacebookColor = Color(0xff4267B2);
 const kConcreteColor = Color(0xffF2F2F2);
 const kEmperorColor = Color(0xff505050);
 const kDividerColor = Color(0xff9B9B9B);
+const kDoveGrayColor = Color(0xff666666);
 const kPostTextStyle = TextStyle(
   fontFamily: 'SVG Avo',
   color: Colors.black,
@@ -21,11 +22,22 @@ const kSmallTitleTextStyle = TextStyle(
     fontFamily: 'RobotoRegular');
 const kActiveTabbarColor = Color(0xffECBA67);
 const kInActiveTabbarColor = Color(0xffdEDEDE);
+const kSecondaryColor = Color(0xffC5F1E8);
+const kColonialWhiteColor = Color(0xffFFE7BF);
+const kGoldenBellColor = Color(0xffD68D15);
 
-const kAppNameText = Text(
+const kAppNameTextBlack = Text(
   'DailyRunning',
   style: TextStyle(
     fontFamily: 'SpringBlueVinyl',
+    fontSize: 36,
+  ),
+);
+const kAppNameTextWhite = Text(
+  'DailyRunning',
+  style: TextStyle(
+    fontFamily: 'SpringBlueVinyl',
+    color: Colors.white,
     fontSize: 36,
   ),
 );

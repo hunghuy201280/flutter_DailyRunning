@@ -21,7 +21,9 @@ class LoginTextField extends StatelessWidget {
         controller: textController,
         decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(preIcon),
+            prefixIcon: Icon(
+              preIcon,
+            ),
             suffixIcon: IconButton(
               onPressed: () => textController.clear(),
               icon: Icon(Icons.clear),

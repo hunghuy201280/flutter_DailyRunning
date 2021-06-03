@@ -1,9 +1,11 @@
 import 'package:daily_running/main.dart';
+import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class HomeScreen extends StatelessWidget {
