@@ -23,10 +23,9 @@ class CircleChart extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Image.asset('assets/images/ic_user_foot.png'),
-            ),
+            child: SizedBox.fromSize(
+                size: Size(90, 90),
+                child: Image.asset('assets/images/ic_user_foot.png')),
           ),
         )),
       ),

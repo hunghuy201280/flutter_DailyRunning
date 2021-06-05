@@ -1,9 +1,11 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
+import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/login_screen.dart';
 import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/home/main_screen.dart';
+import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
 import 'package:daily_running/ui/user/user_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,7 +26,9 @@ class DailyRunning extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<NavBarViewModel>(
-            create: (context) => NavBarViewModel())
+            create: (context) => NavBarViewModel()),
+        ChangeNotifierProvider<RecordViewModel>(
+            create: (context) => RecordViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -37,8 +41,9 @@ class DailyRunning extends StatelessWidget {
           MainScreen.id: (context) => MainScreen(),
           UserScreen.id: (context) => UserScreen(),
           RecordScreen.id: (context) => RecordScreen(),
+          FinishRecordScreen.id: (context) => FinishRecordScreen(),
         },
-        initialRoute: MainScreen.id,
+        initialRoute: FinishRecordScreen.id,
       ),
     );
   }

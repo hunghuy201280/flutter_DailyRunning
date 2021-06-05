@@ -1,5 +1,6 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
+import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/user/widgets/avatar_view.dart';
 import 'package:daily_running/ui/user/widgets/circle_chart.dart';
 import 'package:daily_running/ui/user/widgets/medal_item.dart';

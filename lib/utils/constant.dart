@@ -25,6 +25,7 @@ const kInActiveTabbarColor = Color(0xffdEDEDE);
 const kSecondaryColor = Color(0xffC5F1E8);
 const kColonialWhiteColor = Color(0xffFFE7BF);
 const kGoldenBellColor = Color(0xffD68D15);
+const kSpotifyColor = Color(0xff1DB954);
 
 const kAppNameTextBlack = Text(
   'DailyRunning',
@@ -46,5 +47,19 @@ const kTitleTextStyle = TextStyle(
     fontFamily: 'RobotoRegular',
     color: kMineShaftColor,
     fontSize: 14);
-const kBigTitleTextStyle =
-    TextStyle(fontFamily: 'SVN Avo', fontWeight: FontWeight.w700, fontSize: 20);
+const kRoboto500TextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+  fontFamily: 'RobotoRegular',
+);
+const kBigTitleTextStyle = TextStyle(
+  fontFamily: 'SVN Avo',
+  fontWeight: FontWeight.w700,
+  fontSize: 20,
+);
+const kAvo400TextStyle = TextStyle(
+  fontFamily: 'SVN Avo',
+  fontWeight: FontWeight.w400,
+  fontSize: 16,
+);
