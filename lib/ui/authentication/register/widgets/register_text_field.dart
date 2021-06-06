@@ -4,10 +4,19 @@ import 'package:flutter/material.dart';
 class RegisterTextField extends StatelessWidget {
   final TextEditingController textController;
   final String title;
-
+  final String Function(String text) validator;
+  final void Function(String text) onFieldSubmitted;
+  final bool isPassword;
+  final FocusNode focusNode;
+  final TextInputType inputType;
   const RegisterTextField({
     @required this.textController,
     @required this.title,
+    @required this.validator,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.isPassword = false,
+    @required this.inputType,
   });
   @override
   Widget build(BuildContext context) {
@@ -24,7 +33,13 @@ class RegisterTextField extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        TextField(
+        TextFormField(
+          keyboardType: inputType,
+          obscureText: isPassword,
+          focusNode: focusNode,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: validator,
+          onFieldSubmitted: onFieldSubmitted,
           textAlign: TextAlign.center,
           controller: textController,
           decoration: InputDecoration(

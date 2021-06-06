@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class RoundedRectRadio extends StatefulWidget {
   final List<RadioModel> data;
-  final Function onCheckedChange;
+  final void Function(bool) onCheckedChange;
   RoundedRectRadio({@required this.data, @required this.onCheckedChange});
   @override
   createState() {
@@ -39,7 +39,7 @@ class RoundedRectRadioState extends State<RoundedRectRadio> {
                   setState(() {
                     checkedIndex = 0;
                   });
-                  widget.onCheckedChange(checkedIndex);
+                  widget.onCheckedChange(true);
                 }),
           ),
         ),
@@ -57,7 +57,7 @@ class RoundedRectRadioState extends State<RoundedRectRadio> {
                   setState(() {
                     checkedIndex = 1;
                   });
-                  widget.onCheckedChange(checkedIndex);
+                  widget.onCheckedChange(false);
                 }),
           ),
         ),

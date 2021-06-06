@@ -1,4 +1,5 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
+import 'package:daily_running/model/login/login_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/login_screen.dart';
@@ -8,10 +9,13 @@ import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
 import 'package:daily_running/ui/user/user_screen.dart';
+import 'package:daily_running/utils/constant.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'model/login/register_view_model.dart';
 import 'ui/authentication/register/register_screen.dart';
 
 void main() async {
@@ -21,6 +25,20 @@ void main() async {
 }
 
 class DailyRunning extends StatelessWidget {
+  static SnackBar createSnackBar(String text) {
+    return SnackBar(
+      duration: Duration(seconds: 3),
+      content: Text(
+        text,
+        style: TextStyle(
+          color: kPrimaryColor,
+          fontSize: 16,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -29,8 +47,14 @@ class DailyRunning extends StatelessWidget {
             create: (context) => NavBarViewModel()),
         ChangeNotifierProvider<RecordViewModel>(
             create: (context) => RecordViewModel()),
+        ChangeNotifierProvider<LoginViewModel>(
+            create: (context) => LoginViewModel()),
+        ChangeNotifierProvider<RegisterViewModel>(
+            create: (context) => RegisterViewModel()),
       ],
       child: MaterialApp(
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [const Locale('vi'), const Locale('en')],
         debugShowCheckedModeBanner: false,
         routes: {
           RegisterUpdateInfo.id: (context) => RegisterUpdateInfo(),
@@ -43,7 +67,7 @@ class DailyRunning extends StatelessWidget {
           RecordScreen.id: (context) => RecordScreen(),
           FinishRecordScreen.id: (context) => FinishRecordScreen(),
         },
-        initialRoute: FinishRecordScreen.id,
+        initialRoute: FirstScreen.id,
       ),
     );
   }

@@ -1,44 +1,56 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:daily_running/model/login/register_view_model.dart';
+import 'package:daily_running/ui/authentication/login/login_screen.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
+import 'package:daily_running/ui/authentication/register/widgets/custom_rounded_loading_button.dart';
 import 'package:daily_running/ui/authentication/register/widgets/date_picker.dart';
 import 'package:daily_running/ui/authentication/register/widgets/rounded_rect_radio.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../../main.dart';
 import 'widgets/custom_number_picker.dart';
-
-enum Gender { Male, Female }
-
-extension GenderExtension on Gender {
-  bool get value {
-    switch (this) {
-      case Gender.Male:
-        return true;
-      case Gender.Female:
-        return false;
-      default:
-        return null;
-    }
-  }
-}
 
 class RegisterUpdateInfo extends StatelessWidget {
   static String id = 'RegisterUpdateInfo';
-  DateTime selectedDate = DateTime.now();
-  int tempHeight = 150;
-  int tempWeight = 50;
+  void onRegisterClick(context) {
+    bool gender = Provider.of<RegisterViewModel>(context, listen: false).gender;
+    if (gender == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          DailyRunning.createSnackBar('Vui lòng chọn giới tính!'));
+      Provider.of<RegisterViewModel>(context, listen: false)
+          .registerButtonController
+          .stop();
+    } else
+      Provider.of<RegisterViewModel>(context, listen: false).onRegisterClick(
+          onComplete: (message) async {
+        if (message == null) {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.success,
+              text: 'Đăng ký thành công!');
+          Provider.of<RegisterViewModel>(context, listen: false).reset();
+          await Future.delayed(
+            Duration(
+              seconds: 3,
+            ),
+          );
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      /*setState(() {
-        selectedDate = picked;
-      });*/
-    }
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginScreen.id, (route) => false);
+        } else {
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              text: 'Đăng ký thất bại.\nLỗi: $message');
+          Provider.of<RegisterViewModel>(context, listen: false)
+              .registerButtonController
+              .reset();
+        }
+      });
   }
 
   @override
@@ -54,72 +66,89 @@ class RegisterUpdateInfo extends StatelessWidget {
           backgroundColor: kPrimaryColor,
         ),
         backgroundColor: kConcreteColor,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Giới tính',
-                style: kTitleTextStyle,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              RoundedRectRadio(
-                data: [RadioModel(false, 'Nam'), RadioModel(false, 'Nữ')],
-                onCheckedChange: (index) {
-                  //TODO checked change
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: DatePicker(
-                  tapCallback: () {
-                    //TODO open date picker
-                    _selectDate(context);
-                  },
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Giới tính',
+                  style: kTitleTextStyle,
                 ),
-              ),
-              CustomNumberPicker(
-                value: tempHeight,
-                title: 'Chiều cao (cm)',
-                onValueChanged: (value) {},
-                minValue: 130,
-                maxValue: 220,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              CustomNumberPicker(
-                value: tempWeight,
-                title: 'Cân nặng (kg)',
-                onValueChanged: (value) {},
-                minValue: 30,
-                maxValue: 200,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Center(child: kAppNameTextBlack),
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: Text(
-                  'Phiên bản 2.2.1',
-                  style: kTitleTextStyle.copyWith(
-                    color: Color(0xff666666),
+                SizedBox(
+                  height: 10,
+                ),
+                RoundedRectRadio(
+                  data: [
+                    RadioModel(
+                      Provider.of<RegisterViewModel>(context).gender ?? false,
+                      'Nam',
+                    ),
+                    RadioModel(
+                      !(Provider.of<RegisterViewModel>(context).gender ?? true),
+                      'Nữ',
+                    ),
+                  ],
+                  onCheckedChange:
+                      Provider.of<RegisterViewModel>(context).onGenderChange,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: DatePicker(
+                    date: Provider.of<RegisterViewModel>(context).getDob,
+                    tapCallback: () {
+                      //TODO open date picker
+                      Provider.of<RegisterViewModel>(context, listen: false)
+                          .selectDate(context);
+                    },
                   ),
                 ),
-              ),
-              BigButton(
-                  horizontalPadding: 0,
+                CustomNumberPicker(
+                  value: Provider.of<RegisterViewModel>(context).height,
+                  title: 'Chiều cao (cm)',
+                  onValueChanged:
+                      Provider.of<RegisterViewModel>(context).onHeightChanged,
+                  minValue: 130,
+                  maxValue: 220,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                CustomNumberPicker(
+                  value: Provider.of<RegisterViewModel>(context).weight,
+                  title: 'Cân nặng (kg)',
+                  onValueChanged:
+                      Provider.of<RegisterViewModel>(context).onWeightChanged,
+                  minValue: 30,
+                  maxValue: 200,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(child: kAppNameTextBlack),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    'Phiên bản 2.2.1',
+                    style: kTitleTextStyle.copyWith(
+                      color: Color(0xff666666),
+                    ),
+                  ),
+                ),
+                CustomRoundedLoadingButton(
+                  controller:
+                      Provider.of<RegisterViewModel>(context, listen: false)
+                          .registerButtonController,
                   text: 'Đăng ký',
-                  onClick: () {
-                    //TODO on register click
-                  }),
-            ],
+                  onPress: () {
+                    onRegisterClick(context);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:daily_running/ui/user/widgets/statistic_card.dart';
 import 'package:daily_running/ui/user/widgets/user_follow_card.dart';
 import 'package:daily_running/ui/user/widgets/user_gift_item.dart';
 import 'package:daily_running/utils/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -255,7 +256,10 @@ class UserScreen extends StatelessWidget {
                     ),
                     BigButton(
                         text: 'Đăng xuất',
-                        onClick: () {},
+                        onClick: () {
+                          //logout click
+                          FirebaseAuth.instance.signOut();
+                        },
                         horizontalPadding: 20),
                     SizedBox(
                       height: 80,

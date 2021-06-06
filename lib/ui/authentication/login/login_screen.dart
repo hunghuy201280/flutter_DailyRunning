@@ -1,9 +1,15 @@
+import 'package:cool_alert/cool_alert.dart';
+import 'package:daily_running/model/login/login_view_model.dart';
+import 'package:daily_running/ui/authentication/register/register_screen.dart';
+import 'package:daily_running/ui/authentication/register/widgets/custom_rounded_loading_button.dart';
+import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/utils/running_icons.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/big_button.dart';
 import 'widgets/login_text_field.dart';
@@ -11,8 +17,6 @@ import 'widgets/login_with_button.dart';
 
 class LoginScreen extends StatelessWidget {
   static String id = 'LoginScreen';
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -32,21 +36,51 @@ class LoginScreen extends StatelessWidget {
                 height: 10,
               ),
               LoginTextField(
-                textController: usernameController,
-                hint: 'Tài khoản',
+                textController:
+                    Provider.of<LoginViewModel>(context, listen: false)
+                        .emailController,
+                label: 'Email',
                 preIcon: RunningIcons.profile,
+                validator: Provider.of<LoginViewModel>(context, listen: false)
+                    .emailValidator,
+                onFieldSubmitted:
+                    Provider.of<LoginViewModel>(context, listen: false)
+                        .onEmailDone,
               ),
               LoginTextField(
-                textController: passwordController,
-                hint: 'Mật khẩu',
+                textController:
+                    Provider.of<LoginViewModel>(context, listen: false)
+                        .passwordController,
+                label: 'Mật khẩu',
                 preIcon: RunningIcons.lock,
+                isPassword: true,
+                focusNode: Provider.of<LoginViewModel>(context, listen: false)
+                    .passwordFocusNode,
+                validator: Provider.of<LoginViewModel>(context, listen: false)
+                    .passwordValidator,
               ),
-              BigButton(
-                horizontalPadding: 30,
+              CustomRoundedLoadingButton(
                 text: 'Đăng nhập',
-                onClick: () {
-                  //TODO: login click
+                onPress: () {
+                  //login click
+                  Provider.of<LoginViewModel>(context, listen: false)
+                      .loginWithEmailAndPassword((message) {
+                    if (message != null)
+                      CoolAlert.show(
+                          context: context,
+                          type: CoolAlertType.error,
+                          text: 'Đăng nhập thất bại!\nLỗi: $message',
+                          onConfirmBtnTap: () {
+                            Provider.of<LoginViewModel>(context, listen: false)
+                                .loginButtonController
+                                .reset();
+                            Navigator.of(context).pop();
+                          });
+                  });
                 },
+                controller: Provider.of<LoginViewModel>(context, listen: false)
+                    .loginButtonController,
+                horizontalPadding: 30,
               ),
               RichText(
                 text: TextSpan(
@@ -60,7 +94,8 @@ class LoginScreen extends StatelessWidget {
                       TextSpan(
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            //TODO: register click
+                            //register click
+                            Navigator.pushNamed(context, RegisterScreen.id);
                           },
                         text: 'Đăng ký',
                         style: TextStyle(
@@ -108,6 +143,9 @@ class LoginScreen extends StatelessWidget {
                 isOutLine: true,
                 textColor: Colors.black54,
                 color: Colors.white,
+                onPress: () {
+                  //TODO google login click
+                },
               ),
               SizedBox(
                 height: 10,
@@ -119,6 +157,9 @@ class LoginScreen extends StatelessWidget {
                 isOutLine: false,
                 textColor: Colors.white,
                 color: kFacebookColor,
+                onPress: () {
+                  //TODO fb login click
+                },
               ),
               SizedBox(
                 height: 24,

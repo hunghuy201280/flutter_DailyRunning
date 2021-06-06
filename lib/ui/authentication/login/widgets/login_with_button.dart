@@ -7,6 +7,7 @@ class LoginWithButton extends StatelessWidget {
   final Color iconColor;
   final bool isOutLine;
   final Color textColor;
+  final Function onPress;
   const LoginWithButton({
     @required this.icon,
     @required this.text,
@@ -14,6 +15,7 @@ class LoginWithButton extends StatelessWidget {
     @required this.isOutLine,
     @required this.iconColor,
     @required this.textColor,
+    @required this.onPress,
   });
   @override
   Widget build(BuildContext context) {
@@ -24,9 +26,7 @@ class LoginWithButton extends StatelessWidget {
           icon,
           color: iconColor,
         ),
-        onPressed: () {
-          //TODO google login
-        },
+        onPressed: onPress,
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),

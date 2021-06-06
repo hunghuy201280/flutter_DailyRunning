@@ -1,17 +1,20 @@
+import 'package:daily_running/main.dart';
+import 'package:daily_running/model/login/register_view_model.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
+import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
 import 'package:daily_running/ui/authentication/register/widgets/register_text_field.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   static String id = 'RegisterScreen';
-  final displayNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final retypePasswordController = TextEditingController();
 
+  final emailFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
+  final retypePasswordFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -51,20 +54,59 @@ class RegisterScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           RegisterTextField(
-                            textController: displayNameController,
+                            inputType: TextInputType.name,
+                            textController: Provider.of<RegisterViewModel>(
+                                    context,
+                                    listen: false)
+                                .displayNameController,
                             title: 'Tên hiển thị',
+                            validator: Provider.of<RegisterViewModel>(context,
+                                    listen: false)
+                                .personNameValidate,
+                            onFieldSubmitted: (text) =>
+                                emailFocusNode.requestFocus(),
                           ),
                           RegisterTextField(
-                            textController: emailController,
+                            inputType: TextInputType.emailAddress,
+                            textController: Provider.of<RegisterViewModel>(
+                                    context,
+                                    listen: false)
+                                .emailController,
                             title: 'Email',
+                            focusNode: emailFocusNode,
+                            validator: Provider.of<RegisterViewModel>(context,
+                                    listen: false)
+                                .emailValidate,
+                            onFieldSubmitted: (text) =>
+                                passwordFocusNode.requestFocus(),
                           ),
                           RegisterTextField(
-                            textController: passwordController,
+                            inputType: TextInputType.visiblePassword,
+                            isPassword: true,
+                            textController: Provider.of<RegisterViewModel>(
+                                    context,
+                                    listen: false)
+                                .passwordController,
                             title: 'Mật khẩu',
+                            focusNode: passwordFocusNode,
+                            validator: Provider.of<RegisterViewModel>(context,
+                                    listen: false)
+                                .passwordValidate,
+                            onFieldSubmitted: (text) =>
+                                retypePasswordFocusNode.requestFocus(),
                           ),
                           RegisterTextField(
-                            textController: retypePasswordController,
+                            inputType: TextInputType.visiblePassword,
+                            isPassword: true,
+                            textController: Provider.of<RegisterViewModel>(
+                                    context,
+                                    listen: false)
+                                .retypePasswordController,
                             title: 'Xác thực mật khẩu',
+                            focusNode: retypePasswordFocusNode,
+                            validator: Provider.of<RegisterViewModel>(context,
+                                    listen: false)
+                                .passwordRetypeValidate,
                           ),
                           SizedBox(
                             height: 30,
@@ -75,7 +117,18 @@ class RegisterScreen extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 primary: kPrimaryColor,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                //todo next click
+                                if (Provider.of<RegisterViewModel>(context,
+                                        listen: false)
+                                    .onNextClick())
+                                  Navigator.pushNamed(
+                                      context, RegisterUpdateInfo.id);
+                                else
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      DailyRunning.createSnackBar(
+                                          'Vui lòng điền đầy đủ thông tin!'));
+                              },
                               child: Text('Next'),
                             ),
                           ),
@@ -92,7 +145,9 @@ class RegisterScreen extends StatelessWidget {
                                     TextSpan(
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                          //TODO: register click
+                                          //TODO: login click
+
+                                          Navigator.pop(context);
                                         },
                                       text: 'Đăng nhập',
                                       style: TextStyle(
