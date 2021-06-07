@@ -145,6 +145,8 @@ class LoginScreen extends StatelessWidget {
                 color: Colors.white,
                 onPress: () {
                   //TODO google login click
+                  Provider.of<LoginViewModel>(context, listen: false)
+                      .onGoogleLoginClick();
                 },
               ),
               SizedBox(

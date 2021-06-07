@@ -1,5 +1,6 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:daily_running/model/login/register_view_model.dart';
+import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/login_screen.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
 import 'package:daily_running/ui/authentication/register/widgets/custom_rounded_loading_button.dart';
@@ -15,6 +16,8 @@ import '../../../main.dart';
 import 'widgets/custom_number_picker.dart';
 
 class RegisterUpdateInfo extends StatelessWidget {
+  RegisterUpdateInfo({this.isEmail = true});
+  final bool isEmail;
   static String id = 'RegisterUpdateInfo';
   void onRegisterClick(context) {
     bool gender = Provider.of<RegisterViewModel>(context, listen: false).gender;
@@ -25,13 +28,15 @@ class RegisterUpdateInfo extends StatelessWidget {
           .registerButtonController
           .stop();
     } else
-      Provider.of<RegisterViewModel>(context, listen: false).onRegisterClick(
-          onComplete: (message) async {
+      Provider.of<RegisterViewModel>(context, listen: false)
+          .onRegisterClick(isEmail, onComplete: (message) async {
         if (message == null) {
           CoolAlert.show(
               context: context,
               type: CoolAlertType.success,
-              text: 'Đăng ký thành công!');
+              text: isEmail
+                  ? 'Đăng ký thành công!'
+                  : 'Cập nhật thông tin thành công!');
           Provider.of<RegisterViewModel>(context, listen: false).reset();
           await Future.delayed(
             Duration(
@@ -40,12 +45,13 @@ class RegisterUpdateInfo extends StatelessWidget {
           );
 
           Navigator.pushNamedAndRemoveUntil(
-              context, LoginScreen.id, (route) => false);
+              context, FirstScreen.id, (route) => false);
         } else {
           CoolAlert.show(
               context: context,
               type: CoolAlertType.error,
-              text: 'Đăng ký thất bại.\nLỗi: $message');
+              text:
+                  '${isEmail ? 'Đăng ký' : 'Cập nhật thông tin'} thất bại.\nLỗi: $message');
           Provider.of<RegisterViewModel>(context, listen: false)
               .registerButtonController
               .reset();
@@ -142,7 +148,7 @@ class RegisterUpdateInfo extends StatelessWidget {
                   controller:
                       Provider.of<RegisterViewModel>(context, listen: false)
                           .registerButtonController,
-                  text: 'Đăng ký',
+                  text: isEmail ? 'Đăng ký' : 'Cập nhật thông tin',
                   onPress: () {
                     onRegisterClick(context);
                   },

@@ -2,6 +2,7 @@ import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
 import 'package:daily_running/utils/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -83,23 +84,38 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onRegisterClick({void Function(String) onComplete}) async {
-    RunningUser user = RunningUser(
-      displayName: displayNameController.text.trim(),
-      email: emailController.text.trim(),
-      gender: gender,
-      dob: getDob,
-      height: height,
-      weight: weight,
-      avatarUri: kDefaultAvatarUrl,
-    );
-    String message =
-        await RunningRepo.createUser(user, passwordController.text.trim());
-    if (message == null) {
+  void onRegisterClick(bool isEmail, {void Function(String) onComplete}) async {
+    if (isEmail) {
+      RunningUser user = RunningUser(
+        displayName: displayNameController.text.trim(),
+        email: emailController.text.trim(),
+        gender: gender,
+        dob: getDob,
+        height: height,
+        weight: weight,
+        avatarUri: kDefaultAvatarUrl,
+      );
+      String message =
+          await RunningRepo.createUser(user, passwordController.text.trim());
+      if (message == null) {
+        registerButtonController.success();
+      }
+      onComplete(message);
+    } else {
+      User mFirebaseUser = RunningRepo.getFirebaseUser();
+      RunningUser user = RunningUser(
+          displayName: mFirebaseUser.displayName,
+          email: mFirebaseUser.email,
+          gender: gender,
+          dob: getDob,
+          height: height,
+          weight: weight,
+          avatarUri: mFirebaseUser.photoURL,
+          userID: mFirebaseUser.uid);
+      await RunningRepo.upUserToFireStore(user);
       registerButtonController.success();
+      onComplete(null);
     }
-    onComplete(message);
-    notifyListeners();
   }
 
   bool onNextClick() {

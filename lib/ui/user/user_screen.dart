@@ -1,4 +1,5 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
+import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/user/widgets/avatar_view.dart';
@@ -47,6 +48,7 @@ class UserScreen extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    print(RunningRepo.getFirebaseUser().email);
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -259,6 +261,7 @@ class UserScreen extends StatelessWidget {
                         onClick: () {
                           //logout click
                           FirebaseAuth.instance.signOut();
+                          RunningRepo.googleSignIn.signOut();
                         },
                         horizontalPadding: 20),
                     SizedBox(

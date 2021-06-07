@@ -44,4 +44,8 @@ class LoginViewModel extends ChangeNotifier {
   void onEmailDone(text) {
     passwordFocusNode.requestFocus();
   }
+
+  void onGoogleLoginClick() {
+    RunningRepo.handleGoogleSignIn();
+  }
 }
