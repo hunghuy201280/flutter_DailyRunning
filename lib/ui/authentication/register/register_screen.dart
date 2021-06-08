@@ -127,7 +127,8 @@ class RegisterScreen extends StatelessWidget {
                                 else
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       DailyRunning.createSnackBar(
-                                          'Vui lòng điền đầy đủ thông tin!'));
+                                          'Vui lòng điền đầy đủ thông tin!',
+                                          3));
                               },
                               child: Text('Next'),
                             ),

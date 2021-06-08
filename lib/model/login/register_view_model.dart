@@ -17,7 +17,7 @@ class RegisterViewModel extends ChangeNotifier {
   int height = 150;
   int weight = 50;
   DateTime dob = DateTime.now().subtract(Duration(days: 2000));
-  var _dateFormat = DateFormat("dd/MM/yyyy");
+  static final dateFormat = DateFormat("dd/MM/yyyy");
   bool gender; //true=nam false = nu
 
   void reset() {
@@ -33,7 +33,7 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   get getDob {
-    return _dateFormat.format(dob).toString();
+    return dateFormat.format(dob).toString();
   }
 
   void onGenderChange(bool value) {

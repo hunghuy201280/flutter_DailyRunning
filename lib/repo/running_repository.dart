@@ -113,6 +113,11 @@ class RunningRepo {
     await _firestore.collection('users').doc(user.userID).set(user.toJson());
   }
 
+  static Future updateUserInfo(RunningUser user) async {
+    await upUserToFireStore(user);
+    await _auth.currentUser.updateProfile(displayName: user.displayName);
+  }
+
   static Future<String> createUser(RunningUser user, String password) async {
     UserCredential credential;
     String result;

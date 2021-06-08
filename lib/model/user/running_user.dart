@@ -19,6 +19,19 @@ class RunningUser {
       this.height,
       this.weight,
       this.avatarUri});
+  static RunningUser copyFrom(RunningUser user) {
+    return RunningUser(
+      displayName: user.displayName,
+      email: user.email,
+      point: user.point,
+      gender: user.gender,
+      userID: user.userID,
+      dob: user.dob,
+      height: user.height,
+      weight: user.weight,
+      avatarUri: user.avatarUri,
+    );
+  }
 
   RunningUser.fromJson(Map<String, dynamic> json) {
     displayName = json['displayName'];

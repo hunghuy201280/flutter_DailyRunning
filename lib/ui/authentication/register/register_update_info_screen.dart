@@ -23,7 +23,7 @@ class RegisterUpdateInfo extends StatelessWidget {
     bool gender = Provider.of<RegisterViewModel>(context, listen: false).gender;
     if (gender == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          DailyRunning.createSnackBar('Vui lòng chọn giới tính!'));
+          DailyRunning.createSnackBar('Vui lòng chọn giới tính!', 3));
       Provider.of<RegisterViewModel>(context, listen: false)
           .registerButtonController
           .stop();

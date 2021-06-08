@@ -1,5 +1,6 @@
 import 'package:daily_running/main.dart';
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,7 +77,6 @@ class _PostListViewState extends State<PostListView>
 
 class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
-
   CustomCollapseAppbarDelegate({
     @required this.expandedHeight,
   });
@@ -85,6 +85,8 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final size = 60;
     final top = expandedHeight - shrinkOffset - size / 2;
+    final String userName =
+        Provider.of<UserViewModel>(context).currentUser.displayName;
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
@@ -93,7 +95,7 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Center(
-            child: buildTitle(shrinkOffset),
+            child: buildTitle(shrinkOffset, userName),
           ),
         ),
         Positioned(
@@ -123,14 +125,14 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
           height: 38,
         ),
       );
-  Widget buildTitle(double shrinkOffset) => Opacity(
+  Widget buildTitle(double shrinkOffset, String userName) => Opacity(
         opacity: disappear(shrinkOffset),
         child: Row(
           children: [
             Expanded(
               flex: 3,
               child: Text(
-                'Good morning,\nTest User',
+                'Good morning,\n$userName',
                 style: TextStyle(
                   fontSize: 30 - shrinkOffset * 0.1,
                   fontFamily: 'SVG Avo',

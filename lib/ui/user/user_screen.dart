@@ -118,7 +118,7 @@ class UserScreen extends StatelessWidget {
                 height: 12,
               ),
               Text(
-                'Trung Hiếu',
+                Provider.of<UserViewModel>(context).currentUser.displayName,
                 style: kTitleTextStyle.copyWith(
                   fontSize: 18,
                 ),
@@ -133,7 +133,10 @@ class UserScreen extends StatelessWidget {
                 height: 50,
               ),
               Text(
-                '30',
+                Provider.of<UserViewModel>(context)
+                    .currentUser
+                    .point
+                    .toString(),
                 style: kBigTitleTextStyle,
               ),
               Padding(

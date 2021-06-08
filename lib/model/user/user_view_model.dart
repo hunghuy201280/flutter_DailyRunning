@@ -8,5 +8,9 @@ class UserViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCurrentUserNoNotify(RunningUser user) {
+    _currentUser = user;
+  }
+
   RunningUser get currentUser => _currentUser;
 }

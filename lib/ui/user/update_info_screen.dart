@@ -1,4 +1,6 @@
+import 'package:daily_running/main.dart';
 import 'package:daily_running/model/user/update_info_view_model.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/ui/authentication/register/widgets/custom_number_picker.dart';
 import 'package:daily_running/ui/authentication/register/widgets/custom_rounded_loading_button.dart';
 import 'package:daily_running/ui/authentication/register/widgets/date_picker.dart';
@@ -33,14 +35,17 @@ class UpdateInfoScreen extends StatelessWidget {
                 UpdateInfoTextFormField(
                   label: 'Email',
                   readonly: true,
-                  controller: TextEditingController(),
+                  controller:
+                      Provider.of<UpdateInfoViewModel>(context, listen: false)
+                          .emailController,
                   focusNode: FocusNode(),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: UpdateInfoTextFormField(
-                    controller: Provider.of<UpdateInfoViewModel>(context)
-                        .nameController,
+                    controller:
+                        Provider.of<UpdateInfoViewModel>(context, listen: false)
+                            .nameController,
                     label: 'Tên*',
                     focusNode: Provider.of<UpdateInfoViewModel>(context)
                         .displayNameFocusNode,
@@ -57,29 +62,46 @@ class UpdateInfoScreen extends StatelessWidget {
                 RoundedRectRadio(
                   data: [
                     RadioModel(
-                      false,
+                      Provider.of<UpdateInfoViewModel>(context)
+                          .updateUser
+                          .gender,
                       'Nam',
                     ),
                     RadioModel(
-                      true,
+                      !Provider.of<UpdateInfoViewModel>(context)
+                          .updateUser
+                          .gender,
                       'Nữ',
                     ),
                   ],
-                  onCheckedChange: (val) {},
+                  onCheckedChange: (val) {
+                    Provider.of<UpdateInfoViewModel>(context, listen: false)
+                        .gender = val;
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: DatePicker(
-                    date: '07/06/2021',
+                    date: Provider.of<UpdateInfoViewModel>(context)
+                        .updateUser
+                        .dob,
                     tapCallback: () {
                       //TODO open date picker
+                      Provider.of<UpdateInfoViewModel>(context, listen: false)
+                          .selectDate(context);
                     },
                   ),
                 ),
                 CustomNumberPicker(
-                  value: 150,
+                  value:
+                      Provider.of<UpdateInfoViewModel>(context, listen: false)
+                          .updateUser
+                          .height,
                   title: 'Chiều cao (cm)',
-                  onValueChanged: (int) {},
+                  onValueChanged: (value) {
+                    Provider.of<UpdateInfoViewModel>(context, listen: false)
+                        .height = value;
+                  },
                   minValue: 130,
                   maxValue: 220,
                 ),
@@ -87,9 +109,15 @@ class UpdateInfoScreen extends StatelessWidget {
                   height: 20,
                 ),
                 CustomNumberPicker(
-                  value: 50,
+                  value:
+                      Provider.of<UpdateInfoViewModel>(context, listen: false)
+                          .updateUser
+                          .weight,
                   title: 'Cân nặng (kg)',
-                  onValueChanged: (int) {},
+                  onValueChanged: (value) {
+                    Provider.of<UpdateInfoViewModel>(context, listen: false)
+                        .weight = value;
+                  },
                   minValue: 30,
                   maxValue: 200,
                 ),
@@ -109,9 +137,31 @@ class UpdateInfoScreen extends StatelessWidget {
                   ),
                 ),
                 CustomRoundedLoadingButton(
-                  controller: RoundedLoadingButtonController(),
+                  controller:
+                      Provider.of<UpdateInfoViewModel>(context, listen: false)
+                          .buttonController,
                   text: 'Cập nhật thông tin',
-                  onPress: () {},
+                  onPress: () async {
+                    await Provider.of<UpdateInfoViewModel>(context,
+                            listen: false)
+                        .onUpdateClick((result) async {
+                      if (result != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            DailyRunning.createSnackBar(result, 2));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            DailyRunning.createSnackBar(
+                                'Cập nhật thông tin thành công', 1));
+                        Provider.of<UserViewModel>(context, listen: false)
+                            .currentUser = Provider.of<UpdateInfoViewModel>(
+                                context,
+                                listen: false)
+                            .updateUser;
+                        await Future.delayed(Duration(seconds: 2));
+                        Navigator.pop(context);
+                      }
+                    });
+                  },
                 ),
               ],
             ),

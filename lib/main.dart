@@ -29,9 +29,9 @@ void main() async {
 }
 
 class DailyRunning extends StatelessWidget {
-  static SnackBar createSnackBar(String text) {
+  static SnackBar createSnackBar(String text, int duration) {
     return SnackBar(
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: duration),
       content: Text(
         text,
         style: TextStyle(
