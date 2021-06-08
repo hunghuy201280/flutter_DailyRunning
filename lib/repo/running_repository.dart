@@ -2,10 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class RunningRepo {
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static FirebaseAuth _auth = FirebaseAuth.instance;
+  static FacebookAuth _fbAuth = FacebookAuth.instance;
+  static AccessToken fbAccessToken;
+  static FacebookAuth get fbAuth => _fbAuth;
+  static FirebaseAuth get auth => _auth;
+  //region facebook sign in
+  static void handleFacebookSignIn() async {
+    final LoginResult result = await _fbAuth
+        .login(); // by default we request the email and the public profile
+
+    if (result.status == LoginStatus.success) {
+      // you are logged
+      fbAccessToken = result.accessToken;
+      var credential = FacebookAuthProvider.credential(fbAccessToken.token);
+      await signInFirebase(credential);
+    } else {
+      //error
+      print(result.message);
+    }
+  }
+
+  //endregion
+  //region google sign in
+
   static GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'email',
@@ -17,7 +41,13 @@ class RunningRepo {
       GoogleSignInAccount account = await _googleSignIn.signIn();
 
       if (account != null) {
-        await signInFirebase(account);
+        final GoogleSignInAuthentication authentication =
+            await account.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: authentication.accessToken,
+          idToken: authentication.idToken,
+        );
+        await signInFirebase(credential);
       }
     } catch (error) {
       print(error);
@@ -25,14 +55,8 @@ class RunningRepo {
   }
 
   static User getFirebaseUser() => _auth.currentUser;
-
-  static Future signInFirebase(GoogleSignInAccount account) async {
-    final GoogleSignInAuthentication authentication =
-        await account.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: authentication.accessToken,
-      idToken: authentication.idToken,
-    );
+  //endregion
+  static Future signInFirebase(AuthCredential credential) async {
     try {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);

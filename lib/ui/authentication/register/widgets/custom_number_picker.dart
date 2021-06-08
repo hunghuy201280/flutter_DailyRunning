@@ -4,7 +4,7 @@ import 'package:numberpicker/numberpicker.dart';
 
 class CustomNumberPicker extends StatelessWidget {
   final int value;
-  final Function onValueChanged;
+  final void Function(int) onValueChanged;
   final String title;
   final int minValue;
   final int maxValue;

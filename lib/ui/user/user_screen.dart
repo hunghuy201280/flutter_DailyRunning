@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
+import 'package:daily_running/ui/user/gift/gift_screen.dart';
+import 'package:daily_running/ui/user/update_info_screen.dart';
 import 'package:daily_running/ui/user/widgets/avatar_view.dart';
 import 'package:daily_running/ui/user/widgets/circle_chart.dart';
 import 'package:daily_running/ui/user/widgets/medal_item.dart';
@@ -13,6 +17,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -69,8 +74,12 @@ class UserScreen extends StatelessWidget {
                           ),
                         ),
                         child: AvatarView(
-                          image: AssetImage(
-                              'assets/images/place_holder_avatar.png'),
+                          //image: AssetImage('assets/images/drip_doge.png'),
+                          image: CachedNetworkImageProvider(
+                            Provider.of<UserViewModel>(context)
+                                .currentUser
+                                .avatarUri,
+                          ),
                           onCameraTap: () {
                             //TODO change avatar
                           },
@@ -82,8 +91,20 @@ class UserScreen extends StatelessWidget {
                     alignment: Alignment.topRight,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        'assets/images/ic_setting.svg',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkResponse(
+                          onTap: () => pushNewScreenWithRouteSettings(
+                            context,
+                            settings: RouteSettings(name: UpdateInfoScreen.id),
+                            screen: UpdateInfoScreen(),
+                            withNavBar: false,
+                          ),
+                          radius: 16,
+                          child: SvgPicture.asset(
+                            'assets/images/ic_setting.svg',
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -217,6 +238,8 @@ class UserScreen extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             //TODO on all gift click
+                            pushNewScreen(context,
+                                screen: GiftScreen(), withNavBar: false);
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 15),
@@ -260,8 +283,9 @@ class UserScreen extends StatelessWidget {
                         text: 'Đăng xuất',
                         onClick: () {
                           //logout click
-                          FirebaseAuth.instance.signOut();
+                          RunningRepo.auth.signOut();
                           RunningRepo.googleSignIn.signOut();
+                          RunningRepo.fbAuth.logOut();
                         },
                         horizontalPadding: 20),
                     SizedBox(

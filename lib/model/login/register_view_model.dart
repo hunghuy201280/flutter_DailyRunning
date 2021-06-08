@@ -103,6 +103,11 @@ class RegisterViewModel extends ChangeNotifier {
       onComplete(message);
     } else {
       User mFirebaseUser = RunningRepo.getFirebaseUser();
+      String avatarUrl = mFirebaseUser.photoURL;
+      if (avatarUrl == null) {
+        final userData = await RunningRepo.fbAuth.getUserData();
+        avatarUrl = userData["picture"]["data"]["url"];
+      }
       RunningUser user = RunningUser(
           displayName: mFirebaseUser.displayName,
           email: mFirebaseUser.email,

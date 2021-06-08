@@ -1,4 +1,4 @@
-package vn.edu.uit.daily_running;
+package vn.edu.uit.flutter_daily_running;
 
 import io.flutter.embedding.android.FlutterActivity;
 

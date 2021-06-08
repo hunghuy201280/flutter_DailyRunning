@@ -48,4 +48,8 @@ class LoginViewModel extends ChangeNotifier {
   void onGoogleLoginClick() {
     RunningRepo.handleGoogleSignIn();
   }
+
+  void onFacebookSignInClick() {
+    RunningRepo.handleFacebookSignIn();
+  }
 }

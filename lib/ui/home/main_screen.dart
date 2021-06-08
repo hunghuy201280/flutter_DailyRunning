@@ -1,5 +1,6 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
@@ -52,7 +53,9 @@ class MainScreen extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           RunningUser currentUser = snapshot.data;
-          if (currentUser != null)
+          if (currentUser != null) {
+            Provider.of<UserViewModel>(context, listen: false).currentUser =
+                currentUser;
             return PersistentTabView(
               context,
               controller: _controller,
@@ -60,13 +63,16 @@ class MainScreen extends StatelessWidget {
               screens: screens,
               items: navBarItems,
               confineInSafeArea: true,
-              backgroundColor: Colors.white, // Default is Colors.white.
-              handleAndroidBackButtonPress: true, // Default is true.
-              resizeToAvoidBottomInset:
-                  true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-              stateManagement: true, // Default is true.
-              hideNavigationBarWhenKeyboardShows:
-                  true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+              backgroundColor: Colors.white,
+              // Default is Colors.white.
+              handleAndroidBackButtonPress: true,
+              // Default is true.
+              resizeToAvoidBottomInset: true,
+              // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+              stateManagement: true,
+              // Default is true.
+              hideNavigationBarWhenKeyboardShows: true,
+              // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
               decoration: NavBarDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 colorBehindNavBar: Colors.black,
@@ -87,7 +93,7 @@ class MainScreen extends StatelessWidget {
               navBarStyle: NavBarStyle
                   .style15, // Choose the nav bar style with this property.
             );
-          else {
+          } else {
             return RegisterUpdateInfo(isEmail: false);
           }
         } else {

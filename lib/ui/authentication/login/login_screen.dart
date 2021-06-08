@@ -36,6 +36,7 @@ class LoginScreen extends StatelessWidget {
                 height: 10,
               ),
               LoginTextField(
+                inputType: TextInputType.emailAddress,
                 textController:
                     Provider.of<LoginViewModel>(context, listen: false)
                         .emailController,
@@ -161,6 +162,8 @@ class LoginScreen extends StatelessWidget {
                 color: kFacebookColor,
                 onPress: () {
                   //TODO fb login click
+                  Provider.of<LoginViewModel>(context, listen: false)
+                      .onFacebookSignInClick();
                 },
               ),
               SizedBox(

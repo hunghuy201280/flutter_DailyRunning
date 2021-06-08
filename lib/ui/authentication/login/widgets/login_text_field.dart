@@ -8,6 +8,7 @@ class LoginTextField extends StatelessWidget {
   final Function validator;
   final Function onFieldSubmitted;
   final FocusNode focusNode;
+  final TextInputType inputType;
   const LoginTextField({
     @required this.label,
     @required this.preIcon,
@@ -16,6 +17,7 @@ class LoginTextField extends StatelessWidget {
     @required this.validator,
     this.onFieldSubmitted,
     this.focusNode,
+    this.inputType = TextInputType.visiblePassword,
   });
 
   @override
@@ -30,6 +32,7 @@ class LoginTextField extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted ?? (text) {},
         controller: textController,
         obscureText: isPassword,
+        keyboardType: inputType,
         decoration: InputDecoration(
             labelText: '$label*',
             prefixIcon: Icon(

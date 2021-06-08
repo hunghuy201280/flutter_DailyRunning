@@ -1,5 +1,6 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
+import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/widgets/record_button_row.dart';
 import 'package:daily_running/ui/record/widgets/time_distance_row.dart';
 import 'package:daily_running/utils/constant.dart';
@@ -58,7 +59,10 @@ class RecordScreen extends StatelessWidget {
                                                     listen: false)
                                                 .toggleStop();
                                           },
-                                          onStopPress: () {},
+                                          onStopPress: () {
+                                            Navigator.pushNamed(
+                                                context, FinishRecordScreen.id);
+                                          },
                                           onPausePress: () {
                                             Provider.of<RecordViewModel>(
                                                     context,
