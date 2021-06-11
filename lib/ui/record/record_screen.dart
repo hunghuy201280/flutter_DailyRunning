@@ -1,18 +1,14 @@
-import 'dart:async';
+import 'dart:convert';
 
-import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
-import 'package:daily_running/model/record/location_service.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
-import 'package:daily_running/model/record/user_location.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/widgets/record_button_row.dart';
 import 'package:daily_running/ui/record/widgets/time_distance_row.dart';
+import 'package:daily_running/ui/user/widgets/blur_loading.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -20,142 +16,208 @@ class RecordScreen extends StatelessWidget {
   static String id = 'RecordScreen';
   @override
   Widget build(BuildContext context) {
-    Completer<GoogleMapController> _controller = Completer();
-    LocationData _currentLocation;
-    // wrapper around the location API
-    Location location;
-    location = new Location();
-    // subscribe to changes in the user's location
-    // by "listening" to the location's onLocationChanged event
-    location.onLocationChanged.listen((LocationData cLoc) {
-      // cLoc contains the lat and long of the
-      // current user's position in real time,
-      // so we're holding on to it
-      _currentLocation = cLoc;
-    });
-    final LatLng currentLocation = LatLng(_currentLocation.latitude, _currentLocation.longitude);
-    final CameraPosition _initialPosition = CameraPosition(target: currentLocation, zoom: 15.0, tilt: 0, bearing: 0);
-    print('rebuild 1');
+    print('rebuild entire record');
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.lightBlueAccent,
-        body: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Consumer<RecordViewModel>(
-                  builder: (context, recordViewModel, child) {
-                    print('rebuild 2');
-
-                    return AnimatedContainer(
-                      height: recordViewModel.isExpand ? 190 : 30,
-                      width: double.infinity,
-                      child: Material(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(18),
-                          bottomLeft: Radius.circular(18),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Visibility(
-                                  visible: recordViewModel.isExpand,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 25, vertical: 10),
-                                    child: Column(
-                                      children: [
-                                        TimeDistanceRow(
-                                          time: '00:12:39',
-                                          distance: '20.21Km',
-                                        ),
-                                        RecordButtonRow(
-                                          onContinuePress: () {
-                                            Provider.of<RecordViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .toggleStop();
-                                          },
-                                          onStopPress: () {
-                                            Navigator.pushNamed(
-                                                context, FinishRecordScreen.id);
-                                          },
-                                          onPausePress: () {
-                                            Provider.of<RecordViewModel>(
-                                                    context,
-                                                    listen: false)
-                                                .toggleStop();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Provider.of<RecordViewModel>(context,
-                                        listen: false)
-                                    .toggleExpand();
-                              },
-                              child: Ink(
-                                child: Icon(
-                                  recordViewModel.isExpand
-                                      ? Icons.arrow_drop_up_outlined
-                                      : Icons.arrow_drop_down_outlined,
-                                  size: 30,
-                                ),
-                                width: double.infinity,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 200),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4, left: 20),
-                  child: kAppNameTextBlack,
-                ),
-              ],
-            ),
-            Builder(
-              builder: (context) =>
-                  GoogleMap(
-                      mapType: MapType.normal,
-                      initialCameraPosition: _initialPosition,
-                      myLocationEnabled: true,
-                      onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
-                      }),
-            ),
-            Align(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkResponse(
-                  radius: 20,
-                  onTap: () {},
-                  child: Icon(
-                    FontAwesomeIcons.spotify,
-                    color: kSpotifyColor,
-                    size: 35,
+        body: WillPopScope(
+          onWillPop: () async =>
+              Provider.of<RecordViewModel>(context, listen: false).resetData(),
+          child: Stack(
+            children: [
+              GoogleMapWidget(),
+              TopSheetBar(),
+              RunButton(),
+              Align(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkResponse(
+                    radius: 20,
+                    onTap: () {
+                      Provider.of<RecordViewModel>(context, listen: false)
+                          .takeActivityPicture();
+                    },
+                    child: Icon(
+                      FontAwesomeIcons.spotify,
+                      color: kSpotifyColor,
+                      size: 35,
+                    ),
                   ),
                 ),
+                alignment: Alignment.bottomLeft,
               ),
-              alignment: Alignment.bottomLeft,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+class RunButton extends StatelessWidget {
+  const RunButton({
+    Key key,
+  }) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: Duration(seconds: 1),
+      opacity: Provider.of<RecordViewModel>(context).isRunning ? 0 : 1,
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Material(
+            color: kLightPrimaryColor,
+            shape: CircleBorder(),
+            child: InkResponse(
+              radius: 45,
+              onTap: () => Provider.of<RecordViewModel>(context, listen: false)
+                  .startRunning(context),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Icon(
+                  FontAwesomeIcons.running,
+                  size: 50,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class GoogleMapWidget extends StatelessWidget {
+  const GoogleMapWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GoogleMap(
+      mapType: MapType.normal,
+      mapToolbarEnabled: false,
+      initialCameraPosition:
+          Provider.of<RecordViewModel>(context).initialLocation,
+      myLocationEnabled: true,
+      markers: Set.of(Provider.of<RecordViewModel>(context).mapMarkers),
+      polylines: Provider.of<RecordViewModel>(context).polylines,
+      onMapCreated: (GoogleMapController controller) {
+        Provider.of<RecordViewModel>(context, listen: false).mapController =
+            controller;
+        Provider.of<RecordViewModel>(context, listen: false).setInitialCamera();
+      },
+    );
+  }
+}
+
+class TopSheetBar extends StatelessWidget {
+  const TopSheetBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: Provider.of<RecordViewModel>(context).isRunning,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Consumer<RecordViewModel>(
+            builder: (context, recordViewModel, child) {
+              return Material(
+                elevation: 50,
+                color: Colors.transparent,
+                child: AnimatedContainer(
+                  height: recordViewModel.isExpand ? 190 : 30,
+                  width: double.infinity,
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(18),
+                      bottomLeft: Radius.circular(18),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Visibility(
+                              visible: recordViewModel.isExpand,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 10),
+                                child: Column(
+                                  children: [
+                                    TimeDistanceRow(
+                                      velocity:
+                                          Provider.of<RecordViewModel>(context)
+                                              .currentSpeed,
+                                      time:
+                                          Provider.of<RecordViewModel>(context)
+                                              .timeWorking,
+                                      distance:
+                                          Provider.of<RecordViewModel>(context)
+                                              .distanceString,
+                                    ),
+                                    RecordButtonRow(
+                                      onContinuePress: () {
+                                        Provider.of<RecordViewModel>(context,
+                                                listen: false)
+                                            .togglePause(context);
+                                      },
+                                      onStopPress: () async {
+                                        await Provider.of<RecordViewModel>(
+                                                context,
+                                                listen: false)
+                                            .stopRunning();
+                                        Navigator.pushNamed(
+                                            context, FinishRecordScreen.id);
+                                      },
+                                      onPausePress: () {
+                                        Provider.of<RecordViewModel>(context,
+                                                listen: false)
+                                            .togglePause(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Provider.of<RecordViewModel>(context, listen: false)
+                                .toggleExpand();
+                          },
+                          child: Ink(
+                            child: Icon(
+                              recordViewModel.isExpand
+                                  ? Icons.arrow_drop_up_outlined
+                                  : Icons.arrow_drop_down_outlined,
+                              size: 30,
+                            ),
+                            width: double.infinity,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 200),
+                ),
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, left: 20),
+            child: kAppNameTextBlack,
+          ),
+        ],
+      ),
+    );
+  }
+}

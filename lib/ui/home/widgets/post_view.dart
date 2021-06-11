@@ -99,7 +99,7 @@ class PostView extends StatelessWidget {
           ),
           Image(
             image: mapImage,
-            fit: BoxFit.contain,
+            fit: BoxFit.fill,
           ),
           SizedBox(
             height: 12,

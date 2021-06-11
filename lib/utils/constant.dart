@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 const kPrimaryColor = Color(0xff00A896);
+const kLightPrimaryColor = Color(0xff02C39A);
 const kMineShaftColor = Color(0xff333333);
 const kFacebookColor = Color(0xff4267B2);
 const kConcreteColor = Color(0xffF2F2F2);
@@ -69,3 +70,23 @@ final kPasswordRegex = RegExp(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$");
 final kPersonNameRegex = RegExp(r"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$");
 const kDefaultAvatarUrl =
     'https://firebasestorage.googleapis.com/v0/b/dailyrunning-6e8e9.appspot.com/o/avatar_photos%2Fsbcf-default-avatar%5B1%5D.png?alt=media&token=ec7c1fcd-9fc8-415f-b2ec-51ffb03867a3';
+const List<Widget> kStatisticTab = [
+  SizedBox(
+    height: 35,
+    child: Tab(
+      text: 'Theo tuần',
+    ),
+  ),
+  SizedBox(
+    height: 35,
+    child: Tab(
+      text: 'Theo tháng',
+    ),
+  ),
+  SizedBox(
+    height: 35,
+    child: Tab(
+      text: 'Theo năm',
+    ),
+  ),
+];

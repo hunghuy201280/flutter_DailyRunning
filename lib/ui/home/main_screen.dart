@@ -1,5 +1,6 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
+import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/model/user/update_info_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
@@ -21,32 +22,33 @@ class MainScreen extends StatelessWidget {
   static String id = 'MainScreen';
   final _controller = PersistentTabController(initialIndex: 0);
   final List<Widget> screens = [HomeScreen(), RecordScreen(), UserScreen()];
-  final List<PersistentBottomNavBarItem> navBarItems = [
-    PersistentBottomNavBarItem(
-      icon: Icon(RunningIcons.ic_home),
-      activeColorPrimary: kPrimaryColor,
-      inactiveColorPrimary: CupertinoColors.systemGrey,
-      title: 'Home',
-    ),
-    PersistentBottomNavBarItem(
-        icon: Icon(
-          Icons.add,
-          color: Colors.black,
-          size: 40,
+  List<PersistentBottomNavBarItem> getNavBarItems(BuildContext mContext) => [
+        PersistentBottomNavBarItem(
+          icon: Icon(RunningIcons.ic_home),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+          title: 'Home',
         ),
-        title: 'Record',
-        activeColorPrimary: kPrimaryColor,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-        onPressed: (context) {
-          pushNewScreen(context, screen: RecordScreen(), withNavBar: false);
-        }),
-    PersistentBottomNavBarItem(
-      icon: Icon(RunningIcons.profile),
-      activeColorPrimary: kPrimaryColor,
-      inactiveColorPrimary: CupertinoColors.systemGrey,
-      title: 'Profile',
-    ),
-  ];
+        PersistentBottomNavBarItem(
+            icon: Icon(
+              Icons.add,
+              color: Colors.black,
+              size: 40,
+            ),
+            title: 'Record',
+            activeColorPrimary: kPrimaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+            onPressed: (context) {
+              pushNewScreen(mContext,
+                  screen: RecordScreen(), withNavBar: false);
+            }),
+        PersistentBottomNavBarItem(
+          icon: Icon(RunningIcons.profile),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+          title: 'Profile',
+        ),
+      ];
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<RunningUser>(
@@ -60,10 +62,12 @@ class MainScreen extends StatelessWidget {
                 .setCurrentUserNoNotify(currentUser);
             Provider.of<UpdateInfoViewModel>(context, listen: false)
                 .setUpdateUser(currentUser);
+            Provider.of<StatisticViewModel>(context, listen: false)
+                .getStatistic();
             return MyPersistentTabView(
                 controller: _controller,
                 screens: screens,
-                navBarItems: navBarItems);
+                navBarItems: getNavBarItems(context));
           } else {
             return RegisterUpdateInfo(isEmail: false);
           }

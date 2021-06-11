@@ -21,7 +21,7 @@ class RecordButtonRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Visibility(
-            visible: Provider.of<RecordViewModel>(context).isStop,
+            visible: Provider.of<RecordViewModel>(context).isPause,
             child: Padding(
               padding: const EdgeInsets.only(right: 35),
               child: SizedBox.fromSize(
@@ -47,7 +47,7 @@ class RecordButtonRow extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: !Provider.of<RecordViewModel>(context).isStop,
+            visible: !Provider.of<RecordViewModel>(context).isPause,
             child: IconButton(
               splashRadius: 30,
               onPressed: onPausePress,
@@ -59,7 +59,7 @@ class RecordButtonRow extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: Provider.of<RecordViewModel>(context).isStop,
+            visible: Provider.of<RecordViewModel>(context).isPause,
             child: IconButton(
               splashRadius: 20,
               iconSize: 50,

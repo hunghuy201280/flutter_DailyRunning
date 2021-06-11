@@ -1,6 +1,5 @@
 import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/login/login_view_model.dart';
-import 'package:daily_running/model/record/location_service.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/ui/authentication/first_screen.dart';
@@ -20,6 +19,7 @@ import 'package:provider/provider.dart';
 
 import 'model/login/register_view_model.dart';
 import 'model/record/user_location.dart';
+import 'model/user/statistic_view_model.dart';
 import 'model/user/update_info_view_model.dart';
 import 'ui/authentication/register/register_screen.dart';
 import 'ui/user/gift/gift_screen.dart';
@@ -53,14 +53,17 @@ class DailyRunning extends StatelessWidget {
             create: (context) => NavBarViewModel()),
         ChangeNotifierProvider<RecordViewModel>(
             create: (context) => RecordViewModel()),
-        ChangeNotifierProvider<LoginViewModel>(
-            create: (context) => LoginViewModel()),
+        ChangeNotifierProvider<LoginViewModel>(create: (_) => LoginViewModel()),
         ChangeNotifierProvider<RegisterViewModel>(
             create: (context) => RegisterViewModel()),
-        ChangeNotifierProvider<UpdateInfoViewModel>(
-            create: (context) => UpdateInfoViewModel()),
         ChangeNotifierProvider<UserViewModel>(
             create: (context) => UserViewModel()),
+        ChangeNotifierProxyProvider<UserViewModel, UpdateInfoViewModel>(
+            create: (context) => UpdateInfoViewModel(),
+            update: (context, userViewModel, updateInfoViewModel) =>
+                updateInfoViewModel..update(userViewModel)),
+        ChangeNotifierProvider<StatisticViewModel>(
+            create: (context) => StatisticViewModel()),
       ],
       child: MaterialApp(
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],

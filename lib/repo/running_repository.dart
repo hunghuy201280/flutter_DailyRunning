@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:uuid/uuid.dart';
 
 class RunningRepo {
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,6 +18,48 @@ class RunningRepo {
   static AccessToken fbAccessToken;
   static FacebookAuth get fbAuth => _fbAuth;
   static FirebaseAuth get auth => _auth;
+  static Uuid uuid = Uuid();
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserActivitiesStream() {
+    return _firestore
+        .collection('activity')
+        .doc(_auth.currentUser.uid)
+        .collection('activities')
+        .snapshots();
+  }
+
+  static Future<String> postFile(
+      {@required File imageFile,
+      @required String folderPath,
+      @required String fileName}) async {
+    Reference reference =
+        FirebaseStorage.instance.ref().child(folderPath).child(fileName);
+    TaskSnapshot storageTaskSnapshot = await reference.putFile(imageFile);
+
+    String dowUrl = await storageTaskSnapshot.ref.getDownloadURL();
+
+    return dowUrl;
+  }
+
+  static Future<void> addRunningPoint(RunningUser user, int point) async {
+    _firestore
+        .collection('users')
+        .doc(_auth.currentUser.uid)
+        .update({"point": user.point + point});
+  }
+
+  static Future<String> postUint8ListData(
+      {@required Uint8List data,
+      @required String folderPath,
+      @required String fileName}) async {
+    Reference reference =
+        FirebaseStorage.instance.ref().child(folderPath).child(fileName);
+    TaskSnapshot storageTaskSnapshot = await reference.putData(data);
+    String dowUrl = await storageTaskSnapshot.ref.getDownloadURL();
+
+    return dowUrl;
+  }
+
   //region facebook sign in
   static void handleFacebookSignIn() async {
     final LoginResult result = await _fbAuth
@@ -140,5 +189,19 @@ class RunningRepo {
       await upUserToFireStore(user);
     }
     return Future.value(result);
+  }
+
+  static Future<String> pushActivity(Activity activity) async {
+    try {
+      _firestore
+          .collection('activity')
+          .doc(_auth.currentUser.uid)
+          .collection('activities')
+          .doc(activity.activityID)
+          .set(activity.toJson());
+      return null;
+    } on Exception catch (e) {
+      return Future.value(e.toString());
+    }
   }
 }

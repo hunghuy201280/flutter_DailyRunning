@@ -1,5 +1,6 @@
 import 'package:daily_running/model/login/register_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,10 @@ class UpdateInfoViewModel extends ChangeNotifier {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   RunningUser updateUser;
+  update(UserViewModel userViewModel) {
+    setUpdateUser(userViewModel.currentUser);
+  }
+
   void setUpdateUser(RunningUser val) {
     updateUser = RunningUser.copyFrom(val);
     nameController.text = val.displayName;
