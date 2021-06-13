@@ -27,7 +27,7 @@ class Activity {
     distance = json['distance'];
     duration = json['duration'];
     if (json['latLngArrayList'] != null) {
-      latLngArrayList = new List<LatLngArrayList>();
+      latLngArrayList = [];
       json['latLngArrayList'].forEach((v) {
         latLngArrayList.add(new LatLngArrayList.fromJson(v));
       });

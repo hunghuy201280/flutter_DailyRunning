@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -328,6 +329,13 @@ class RecordViewModel extends ChangeNotifier {
     );
 
     String result = await RunningRepo.pushActivity(newActivity);
+    RunningRepo.createPost(Post(
+      activity: newActivity,
+      postID: RunningRepo.uuid.v4(),
+      ownerAvatarUrl: RunningRepo.auth.currentUser.photoURL,
+      ownerID: RunningRepo.auth.currentUser.uid,
+      ownerName: RunningRepo.auth.currentUser.displayName,
+    ));
     isLoading = false;
     notifyListeners();
     if (result == null)

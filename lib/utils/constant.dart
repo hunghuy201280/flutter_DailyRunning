@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+enum PostType { Me, Following }
 const kPrimaryColor = Color(0xff00A896);
 const kLightPrimaryColor = Color(0xff02C39A);
 const kMineShaftColor = Color(0xff333333);
@@ -90,3 +91,6 @@ const List<Widget> kStatisticTab = [
     ),
   ),
 ];
+
+const kLightImage =
+    'https://firebasestorage.googleapis.com/v0/b/flutter-daily-running.appspot.com/o/light_image.png?alt=media&token=24c6a8b1-d807-4c02-a545-32649d4c8b58';

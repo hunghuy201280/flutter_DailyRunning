@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,38 @@ class RunningRepo {
   static FacebookAuth get fbAuth => _fbAuth;
   static FirebaseAuth get auth => _auth;
   static Uuid uuid = Uuid();
+
+  static updateLikeForPost(Post post, List<Like> likes) async {
+    _firestore
+        .collection('post')
+        .doc(_auth.currentUser.uid)
+        .collection('user_posts')
+        .doc(post.postID)
+        .update({'like': likes.map((v) => v.toJson()).toList()});
+  }
+
+  static Future<void> createPost(Post post) async {
+    try {
+      await _firestore
+          .collection('post')
+          .doc(_auth.currentUser.uid)
+          .collection('user_posts')
+          .doc(post.postID)
+          .set(post.toJson());
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  static Stream<List<Post>> getUserPost() async* {
+    await for (var newPost in _firestore
+        .collection('post')
+        .doc(_auth.currentUser.uid)
+        .collection('user_posts')
+        .snapshots()) {
+      yield newPost.docs.map((posts) => Post.fromJson(posts.data())).toList();
+    }
+  }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserActivitiesStream() {
     return _firestore
@@ -164,7 +197,8 @@ class RunningRepo {
 
   static Future updateUserInfo(RunningUser user) async {
     await upUserToFireStore(user);
-    await _auth.currentUser.updateProfile(displayName: user.displayName);
+    await _auth.currentUser
+        .updateProfile(displayName: user.displayName, photoURL: user.avatarUri);
   }
 
   static Future<String> createUser(RunningUser user, String password) async {

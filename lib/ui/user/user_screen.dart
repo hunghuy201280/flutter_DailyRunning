@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
@@ -65,17 +64,16 @@ class UserScreen extends StatelessWidget {
                             ),
                             child: AvatarView(
                               //image: AssetImage('assets/images/drip_doge.png'),
-                              image: CachedNetworkImageProvider(
-                                Provider.of<UserViewModel>(context)
-                                    .currentUser
-                                    .avatarUri,
-                              ),
+                              imageUrl: Provider.of<UserViewModel>(context)
+                                  .currentUser
+                                  .avatarUri,
                               onCameraTap: () async {
                                 //TODO change avatar
                                 ImageSource source = await showDialog(
                                   context: context,
                                   builder: (context) => ChangeAvatarDialog(),
                                 );
+                                if (source == null) return;
                                 Provider.of<UserViewModel>(context,
                                         listen: false)
                                     .onAvatarChange(source);

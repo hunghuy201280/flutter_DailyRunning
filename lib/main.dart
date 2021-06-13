@@ -1,10 +1,10 @@
-import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
 import 'package:daily_running/model/login/login_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/login_screen.dart';
 import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
+import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'model/home/post_view_model.dart';
 import 'model/login/register_view_model.dart';
 import 'model/record/user_location.dart';
 import 'model/user/statistic_view_model.dart';
@@ -49,8 +50,6 @@ class DailyRunning extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<NavBarViewModel>(
-            create: (context) => NavBarViewModel()),
         ChangeNotifierProvider<RecordViewModel>(
             create: (context) => RecordViewModel()),
         ChangeNotifierProvider<LoginViewModel>(create: (_) => LoginViewModel()),
@@ -64,6 +63,8 @@ class DailyRunning extends StatelessWidget {
                 updateInfoViewModel..update(userViewModel)),
         ChangeNotifierProvider<StatisticViewModel>(
             create: (context) => StatisticViewModel()),
+        ChangeNotifierProvider<PostViewModel>(
+            create: (context) => PostViewModel()),
       ],
       child: MaterialApp(
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],
@@ -81,6 +82,7 @@ class DailyRunning extends StatelessWidget {
           FinishRecordScreen.id: (context) => FinishRecordScreen(),
           UpdateInfoScreen.id: (context) => UpdateInfoScreen(),
           GiftScreen.id: (context) => GiftScreen(),
+          CommentScreen.id: (context) => CommentScreen(),
         },
         initialRoute: FirstScreen.id,
       ),

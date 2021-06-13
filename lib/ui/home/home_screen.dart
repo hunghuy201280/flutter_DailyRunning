@@ -1,13 +1,9 @@
-import 'package:daily_running/main.dart';
-import 'package:daily_running/model/home/navBar/nav_bar_view_model.dart';
-import 'package:daily_running/model/user/user_view_model.dart';
+import 'package:daily_running/ui/home/widgets/post_list_view.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
+import 'package:daily_running/ui/home/widgets/tool_bar_widget.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class HomeScreen extends StatelessWidget {
   static String id = 'HomeScreen';
@@ -28,8 +24,8 @@ class HomeScreen extends StatelessWidget {
             },
             body: TabBarView(
               children: [
-                PostListView(),
-                PostListView(),
+                PostListView(type: PostType.Following), //Follow
+                PostListView(type: PostType.Me), //Me
               ],
             ),
           ),
@@ -37,42 +33,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class PostListView extends StatefulWidget {
-  @override
-  _PostListViewState createState() => _PostListViewState();
-}
-
-class _PostListViewState extends State<PostListView>
-    with AutomaticKeepAliveClientMixin<PostListView> {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return PostView(
-          avatar: AssetImage('assets/images/place_holder_avatar.png'),
-          ownerName: 'Trung Hiếu',
-          dateTime: '2020-20-20 20:20',
-          description:
-              'This is description This is description This is description',
-          distance: 20.12313,
-          timeWorking: 20.2,
-          pace: 20.3,
-          mapImage: AssetImage(
-            'assets/images/place_holder_post.png',
-          ),
-          like: 20,
-          comment: 20,
-        );
-      },
-      itemCount: 10,
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
@@ -85,27 +45,31 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     final size = 60;
     final top = expandedHeight - shrinkOffset - size / 2;
-    final String userName =
-        Provider.of<UserViewModel>(context).currentUser.displayName;
+/*    final String userName =
+        Provider.of<UserViewModel>(context).currentUser.displayName;*/
     return Stack(
       fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
-        buildBackground(shrinkOffset),
+        ToolBarBackground(
+            shrinkOffset: shrinkOffset, expandedHeight: expandedHeight),
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Center(
-            child: buildTitle(shrinkOffset, userName),
+            child: ToolBarTitle(
+                shrinkOffset: shrinkOffset, expandedHeight: expandedHeight),
           ),
         ),
         Positioned(
           top: top,
           left: 66,
           right: 66,
-          child: buildFloatingTabBar(shrinkOffset),
+          child: FloatingTabBar(
+              shrinkOffset: shrinkOffset, expandedHeight: expandedHeight),
         ),
         Positioned(
-          child: buildSearchButton(shrinkOffset),
+          child: SearchButton(
+              shrinkOffset: shrinkOffset, expandedHeight: expandedHeight),
           top: 26,
           right: 26,
         ),
@@ -113,20 +77,40 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  double appear(double shrinkOffset) => shrinkOffset / expandedHeight;
+  static double appear(double shrinkOffset, double expandedHeight) =>
+      shrinkOffset / expandedHeight;
 
-  double disappear(double shrinkOffset) => 1 - shrinkOffset / expandedHeight;
+  static double disappear(double shrinkOffset, double expandedHeight) =>
+      1 - shrinkOffset / expandedHeight;
 
-  Widget buildSearchButton(double shrinkOffset) => Opacity(
-        opacity: disappear(shrinkOffset),
-        child: SvgPicture.asset(
-          'assets/images/ic_search.svg',
-          color: Colors.black,
-          height: 38,
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => expandedHeight;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => 0;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    // TODO: implement shouldRebuild
+    return true;
+  }
+}
+/*
+  Widget buildSearchButton(double shrinkOffset,double expandedHeight) => Opacity(
+        opacity: CustomCollapseAppbarDelegate.disappear(shrinkOffset,expandedHeight),
+        child: InkResponse(
+          onTap: () {},
+          child: SvgPicture.asset(
+            'assets/images/ic_search.svg',
+            color: Colors.black,
+            height: 38,
+          ),
         ),
       );
-  Widget buildTitle(double shrinkOffset, String userName) => Opacity(
-        opacity: disappear(shrinkOffset),
+  Widget buildTitle(double shrinkOffset, String userName, double expandedHeight) => Opacity(
+        opacity: CustomCollapseAppbarDelegate.disappear(shrinkOffset,expandedHeight),
         child: Row(
           children: [
             Expanded(
@@ -147,16 +131,16 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
         ),
       );
 
-  Widget buildBackground(double shrinkOffset) => Opacity(
-        opacity: disappear(shrinkOffset),
+  Widget buildBackground(double shrinkOffset,double expandedHeight) => Opacity(
+        opacity: CustomCollapseAppbarDelegate.disappear(shrinkOffset,expandedHeight),
         child: Image.asset(
           'assets/images/home_banner.png',
           fit: BoxFit.cover,
         ),
       );
 
-  Widget buildFloatingTabBar(double shrinkOffset) => Opacity(
-        opacity: disappear(shrinkOffset),
+  Widget buildFloatingTabBar(double shrinkOffset, double expandedHeight) => Opacity(
+        opacity: CustomCollapseAppbarDelegate.disappear(shrinkOffset,expandedHeight),
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
@@ -189,34 +173,4 @@ class CustomCollapseAppbarDelegate extends SliverPersistentHeaderDelegate {
           ),
         ),
       );
-
-  Widget buildButton({
-    @required String text,
-    @required IconData icon,
-  }) =>
-      TextButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon),
-            const SizedBox(width: 12),
-            Text(text, style: TextStyle(fontSize: 20)),
-          ],
-        ),
-        onPressed: () {},
-      );
-
-  @override
-  // TODO: implement maxExtent
-  double get maxExtent => expandedHeight;
-
-  @override
-  // TODO: implement minExtent
-  double get minExtent => 0;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    // TODO: implement shouldRebuild
-    return true;
-  }
-}
+*/

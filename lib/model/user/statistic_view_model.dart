@@ -34,6 +34,9 @@ class StatisticViewModel extends ChangeNotifier {
       return actDate.isBefore(mondayOfNextWeek) &&
           actDate.isAfter(sundayOfLastWeek);
     }).toList();
+    distancesStatistic[0] = 0;
+    timeWorkingStatistic[0] = 0;
+    workingCountStatistic[0] = 0;
     weekActivity.forEach((act) {
       distancesStatistic[0] += act.distance;
       timeWorkingStatistic[0] += act.duration;
@@ -51,6 +54,9 @@ class StatisticViewModel extends ChangeNotifier {
       return actDate.isBefore(firstDayOfNextMonth) &&
           actDate.isAfter(lastDayOfLastMonth);
     }).toList();
+    distancesStatistic[1] = 0;
+    timeWorkingStatistic[1] = 0;
+    workingCountStatistic[1] = 0;
     monthActivity.forEach((act) {
       distancesStatistic[1] += act.distance;
       timeWorkingStatistic[1] += act.duration;
@@ -68,6 +74,9 @@ class StatisticViewModel extends ChangeNotifier {
       return actDate.isBefore(firstDayOfNextYear) &&
           actDate.isAfter(lastDayOfLastYear);
     }).toList();
+    distancesStatistic[2] = 0;
+    timeWorkingStatistic[2] = 0;
+    workingCountStatistic[2] = 0;
     yearActivity.forEach((act) {
       distancesStatistic[2] += act.distance;
       timeWorkingStatistic[2] += act.duration;
@@ -76,14 +85,14 @@ class StatisticViewModel extends ChangeNotifier {
     distancesStatistic[2] /= 1000;
   }
 
-  void getStatistic() async {
+  Future<void> getStatistic() async {
     resetData();
     statisticStream = RunningRepo.getUserActivitiesStream();
     await for (var snapshot in statisticStream) {
       print('new activity found!');
-      List<Activity> temp = snapshot.docChanges
-          .map((e) => Activity.fromJson(e.doc.data()))
-          .toList();
+      List<Activity> temp =
+          snapshot.docs.map((e) => Activity.fromJson(e.data())).toList();
+      userActivities.clear();
       userActivities.addAll(temp);
       getWeekStatistic();
       getMonthStatistic();
