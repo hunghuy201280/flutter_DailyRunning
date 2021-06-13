@@ -17,9 +17,11 @@ class PostView extends StatelessWidget {
 
   final int index;
   final bool isLoading;
+  final PostType type;
   const PostView({
     this.isLoading = false,
     @required this.index,
+    @required this.type,
   });
   @override
   Widget build(BuildContext context) {
@@ -164,9 +166,14 @@ class PostView extends StatelessWidget {
                     imageUrl: postViewModel.myPosts[index].activity.pictureURI,
                     imageBuilder: (context, imageProvider) => SizedBox.fromSize(
                       size: Size(double.infinity, 180),
-                      child: Image(
-                        image: imageProvider,
-                        fit: BoxFit.fill,
+                      child: GestureDetector(
+                        onTap: () =>
+                            Provider.of<PostViewModel>(context, listen: false)
+                                .onActivitySelected(context, index, type),
+                        child: Image(
+                          image: imageProvider,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                     placeholder: (context, url) => Shimmer.fromColors(

@@ -38,6 +38,7 @@ class _PostListViewState extends State<PostListView>
               return PostView(
                 index: index,
                 isLoading: !(snapshot.connectionState == ConnectionState.done),
+                type: widget.type,
               );
             },
             itemCount: posts.length,
@@ -48,6 +49,7 @@ class _PostListViewState extends State<PostListView>
               return PostView(
                 index: -1,
                 isLoading: true,
+                type: widget.type,
               );
             },
             itemCount: 3,

@@ -266,7 +266,7 @@ class RecordViewModel extends ChangeNotifier {
     imageBytes = await mapController.takeSnapshot();
   }
 
-  Future<Uint8List> getMarker(String type, BuildContext context) async {
+  static Future<Uint8List> getMarker(String type, BuildContext context) async {
     if (type == 'start')
       return (await DefaultAssetBundle.of(context)
               .load('assets/images/marker_start.png'))
@@ -289,7 +289,7 @@ class RecordViewModel extends ChangeNotifier {
   get isExpand => _isExpand;
   get isPause => _isPause;
 
-  LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+  static LatLngBounds boundsFromLatLngList(List<LatLng> list) {
     assert(list.isNotEmpty);
     double x0, x1, y0, y1;
     for (LatLng latLng in list) {

@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/home/post_view_model.dart';
+import 'package:daily_running/model/login/login_view_model.dart';
+import 'package:daily_running/model/login/register_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
@@ -37,6 +40,17 @@ class UserScreen extends StatelessWidget {
         onTap: () {},
       ),
   ];
+
+  void onLogOutCleanUp(BuildContext context) {
+    Provider.of<PostViewModel>(context, listen: false).resetData();
+    Provider.of<LoginViewModel>(context, listen: false).reset();
+    Provider.of<RegisterViewModel>(context, listen: false).reset();
+    Provider.of<RecordViewModel>(context, listen: false).resetData();
+    Provider.of<StatisticViewModel>(context, listen: false).resetData();
+    RunningRepo.auth.signOut();
+    RunningRepo.googleSignIn.signOut();
+    RunningRepo.fbAuth.logOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -233,11 +247,9 @@ class UserScreen extends StatelessWidget {
                         ),
                         BigButton(
                             text: 'Đăng xuất',
-                            onClick: () {
+                            onClick: () async {
                               //logout click
-                              RunningRepo.auth.signOut();
-                              RunningRepo.googleSignIn.signOut();
-                              RunningRepo.fbAuth.logOut();
+                              onLogOutCleanUp(context);
                             },
                             horizontalPadding: 20),
                         SizedBox(

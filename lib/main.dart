@@ -7,6 +7,7 @@ import 'package:daily_running/ui/authentication/register/register_update_info_sc
 import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/home/main_screen.dart';
+import 'package:daily_running/ui/record/activity_view_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
 import 'package:daily_running/ui/user/update_info_screen.dart';
@@ -83,6 +84,7 @@ class DailyRunning extends StatelessWidget {
           UpdateInfoScreen.id: (context) => UpdateInfoScreen(),
           GiftScreen.id: (context) => GiftScreen(),
           CommentScreen.id: (context) => CommentScreen(),
+          ActivityView.id: (context) => ActivityView(),
         },
         initialRoute: FirstScreen.id,
       ),
