@@ -10,6 +10,8 @@ import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/ui/record/activity_view_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
+import 'package:daily_running/ui/user/other_user/other_user_activity.dart';
+import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/ui/user/update_info_screen.dart';
 import 'package:daily_running/ui/user/user_screen.dart';
 import 'package:daily_running/utils/constant.dart';
@@ -19,8 +21,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'model/home/post_view_model.dart';
+import 'model/home/search/search_view_model.dart';
 import 'model/login/register_view_model.dart';
 import 'model/record/user_location.dart';
+import 'model/user/other_user/other_follow_view_model.dart';
+import 'model/user/other_user/other_profile_view_model.dart';
 import 'model/user/statistic_view_model.dart';
 import 'model/user/update_info_view_model.dart';
 import 'ui/authentication/register/register_screen.dart';
@@ -66,6 +71,15 @@ class DailyRunning extends StatelessWidget {
             create: (context) => StatisticViewModel()),
         ChangeNotifierProvider<PostViewModel>(
             create: (context) => PostViewModel()),
+        ChangeNotifierProvider<SearchViewModel>(
+            create: (context) => SearchViewModel()),
+        ChangeNotifierProvider<OtherProfileViewModel>(
+            create: (context) => OtherProfileViewModel()),
+        ChangeNotifierProxyProvider<OtherProfileViewModel,
+                OtherFollowViewModel>(
+            create: (context) => OtherFollowViewModel(),
+            update: (context, otherProfileViewModel, otherFollowViewModel) =>
+                otherFollowViewModel..update(otherProfileViewModel)),
       ],
       child: MaterialApp(
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],
@@ -84,7 +98,8 @@ class DailyRunning extends StatelessWidget {
           UpdateInfoScreen.id: (context) => UpdateInfoScreen(),
           GiftScreen.id: (context) => GiftScreen(),
           CommentScreen.id: (context) => CommentScreen(),
-          ActivityView.id: (context) => ActivityView(),
+          OtherUserScreen.id: (context) => OtherUserScreen(),
+          OtherUserActivity.id: (context) => OtherUserActivity(),
         },
         initialRoute: FirstScreen.id,
       ),

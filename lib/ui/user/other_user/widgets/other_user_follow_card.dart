@@ -1,9 +1,9 @@
-import 'package:daily_running/model/user/user_view_model.dart';
-import 'package:daily_running/utils/constant.dart';
+import 'package:daily_running/model/user/other_user/other_follow_view_model.dart';
+import 'package:daily_running/ui/user/widgets/user_follow_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class UserFollowCard extends StatelessWidget {
+class OtherUserFollowCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -14,7 +14,7 @@ class UserFollowCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: IntrinsicHeight(
-          child: Consumer<UserViewModel>(
+          child: Consumer<OtherFollowViewModel>(
             builder: (context, viewModel, _) => Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -45,32 +45,6 @@ class UserFollowCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class UserFollowNumColumn extends StatelessWidget {
-  final int value;
-  final String title;
-
-  const UserFollowNumColumn({@required this.value, @required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value.toString(),
-          style: kBigTitleTextStyle.copyWith(fontSize: 22),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          title,
-          style: kPostTextStyle.copyWith(fontSize: 15),
-        ),
-      ],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 enum PostType { Me, Following }
+enum ActivityViewType { FromHomeScreen, FromFollowing }
 const kPrimaryColor = Color(0xff00A896);
 const kLightPrimaryColor = Color(0xff02C39A);
 const kMineShaftColor = Color(0xff333333);

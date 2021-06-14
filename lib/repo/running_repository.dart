@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,6 +21,14 @@ class RunningRepo {
   static FacebookAuth get fbAuth => _fbAuth;
   static FirebaseAuth get auth => _auth;
   static Uuid uuid = Uuid();
+
+  static Stream<List<RunningUser>> getSearchData() async* {
+    await for (var datas in _firestore.collection('users').snapshots()) {
+      List<RunningUser> result =
+          datas.docs.map((e) => RunningUser.fromJson(e.data())).toList();
+      yield result;
+    }
+  }
 
   static updateLikeForPost(Post post, List<Like> likes) async {
     _firestore
@@ -53,12 +62,128 @@ class RunningRepo {
     }
   }
 
+  static Stream<List<Post>> getUserPostChanges() async* {
+    await for (var newPost in _firestore
+        .collection('post')
+        .doc(_auth.currentUser.uid)
+        .collection('user_posts')
+        .snapshots()) {
+      yield newPost.docChanges
+          .map((posts) => Post.fromJson(posts.doc.data()))
+          .toList();
+    }
+  }
+
+  static Future<List<Follow>> getFollower(String uid) async {
+    var res = await _firestore
+        .collection('follow')
+        .doc(uid)
+        .collection('follower')
+        .get();
+    return res.docs.map((e) => Follow.fromJson(e.data())).toList();
+  }
+
+  static Future<List<Follow>> getFollowing(String uid) async {
+    var res = await _firestore
+        .collection('follow')
+        .doc(uid)
+        .collection('following')
+        .get();
+    return res.docs.map((e) => Follow.fromJson(e.data())).toList();
+  }
+
+  static void followUser(RunningUser user) async {
+    try {
+      await _firestore
+          .collection('follow')
+          .doc(_auth.currentUser.uid)
+          .collection('following')
+          .doc(user.userID)
+          .set(Follow(
+            uid: user.userID,
+            avatarUrl: user.avatarUri,
+            displayName: user.displayName,
+          ).toJson());
+      await _firestore
+          .collection('follow')
+          .doc(user.userID)
+          .collection('follower')
+          .doc(_auth.currentUser.uid)
+          .set(Follow(
+            uid: _auth.currentUser.uid,
+            avatarUrl: _auth.currentUser.photoURL,
+            displayName: _auth.currentUser.displayName,
+          ).toJson());
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  static void unfollowUser(String uid) async {
+    await _firestore
+        .collection('follow')
+        .doc(_auth.currentUser.uid)
+        .collection('following')
+        .doc(uid)
+        .delete();
+    await _firestore
+        .collection('follow')
+        .doc(uid)
+        .collection('follower')
+        .doc(_auth.currentUser.uid)
+        .delete();
+  }
+
+  static Future<bool> checkFollow(String uid) async {
+    var res = await _firestore
+        .collection('follow')
+        .doc(_auth.currentUser.uid)
+        .collection('following')
+        .doc(uid)
+        .get();
+    return res.exists;
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getFollowerStream() {
+    return _firestore
+        .collection('follow')
+        .doc(_auth.currentUser.uid)
+        .collection('follower')
+        .snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getFollowingStream() {
+    return _firestore
+        .collection('follow')
+        .doc(_auth.currentUser.uid)
+        .collection('following')
+        .snapshots();
+  }
+
+  static Future<List<Post>> getUserPostById(String uid) async {
+    var snapshot = await _firestore
+        .collection('post')
+        .doc(uid)
+        .collection('user_posts')
+        .get();
+    return snapshot.docs.map((post) => Post.fromJson(post.data())).toList();
+  }
+
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserActivitiesStream() {
     return _firestore
         .collection('activity')
         .doc(_auth.currentUser.uid)
         .collection('activities')
         .snapshots();
+  }
+
+  static Future<List<Activity>> getUserActivitiesById(String uid) async {
+    var snap = await _firestore
+        .collection('activity')
+        .doc(uid)
+        .collection('activities')
+        .get();
+    return snap.docs.map((e) => Activity.fromJson(e.data())).toList();
   }
 
   static Future<String> postFile(
@@ -165,6 +290,14 @@ class RunningRepo {
       return null;
   }
 
+  static Future<RunningUser> getUserById(String uid) async {
+    var snapshot = await _firestore.collection('users').doc(uid).get();
+    if (snapshot.exists)
+      return RunningUser.fromJson(snapshot.data());
+    else
+      return null;
+  }
+
   static Future<String> signInWithEmailAndPassword(
       String email, String password) async {
     UserCredential credential;
@@ -193,6 +326,17 @@ class RunningRepo {
 
   static Future upUserToFireStore(RunningUser user) async {
     await _firestore.collection('users').doc(user.userID).set(user.toJson());
+    _firestore
+        .collection('post')
+        .doc(user.userID)
+        .collection('user_posts')
+        .get()
+        .then((post) => post.docs.forEach((element) {
+              element.reference.update({
+                'ownerName': user.displayName,
+                'ownerAvatarUrl': user.avatarUri
+              });
+            }));
   }
 
   static Future updateUserInfo(RunningUser user) async {

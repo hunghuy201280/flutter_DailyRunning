@@ -18,10 +18,12 @@ class LoginViewModel extends ChangeNotifier {
   void loginWithEmailAndPassword(void Function(String) onComplete) async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
+    String result;
+
     if (!(kEmailRegex.hasMatch(email) && kPasswordRegex.hasMatch(password)))
-      return;
-    String result =
-        await RunningRepo.signInWithEmailAndPassword(email, password);
+      result = 'Email hoặc password không hợp lệ !';
+    else
+      result = await RunningRepo.signInWithEmailAndPassword(email, password);
     onComplete(result);
     if (result != null) {
       loginButtonController.error();

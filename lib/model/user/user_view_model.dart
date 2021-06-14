@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +18,8 @@ class UserViewModel extends ChangeNotifier {
 
   void setCurrentUserNoNotify(RunningUser user) {
     _currentUser = user;
+    listenToFollowerChange();
+    listenToFollowingChange();
   }
 
   set isLoading(val) {
@@ -56,4 +60,47 @@ class UserViewModel extends ChangeNotifier {
     _currentUser.point += point;
     notifyListeners();
   }
+
+  //region follow
+  List<Follow> follower = [];
+  List<Follow> following = [];
+
+  void listenToFollowerChange() async {
+    follower.clear();
+    var stream = RunningRepo.getFollowerStream();
+    await for (var event in stream) {
+      event.docChanges.forEach((change) {
+        Follow followChange = Follow.fromJson(change.doc.data());
+
+        if (change.type == DocumentChangeType.added) {
+          follower.add(followChange);
+        } else if (change.type == DocumentChangeType.removed) {
+          int deletedIndex =
+              follower.indexWhere((element) => element.uid == followChange.uid);
+          if (deletedIndex >= 0) follower.removeAt(deletedIndex);
+        }
+      });
+      notifyListeners();
+    }
+  }
+
+  void listenToFollowingChange() async {
+    following.clear();
+    var stream = RunningRepo.getFollowingStream();
+    await for (var event in stream) {
+      event.docChanges.forEach((change) {
+        Follow followChange = Follow.fromJson(change.doc.data());
+
+        if (change.type == DocumentChangeType.added) {
+          following.add(followChange);
+        } else if (change.type == DocumentChangeType.removed) {
+          int deletedIndex = following
+              .indexWhere((element) => element.uid == followChange.uid);
+          if (deletedIndex > 0) following.removeAt(deletedIndex);
+        }
+      });
+      notifyListeners();
+    }
+  }
+  //endregion
 }

@@ -52,7 +52,7 @@ class PostViewModel extends ChangeNotifier {
     selectedActivity = null;
     mapMarkers = [];
     _polylines.clear();
-    mapController.dispose();
+    if (mapController != null) mapController.dispose();
     myLike = Like(
       userID: RunningRepo.auth.currentUser.uid,
       avatarUrl: RunningRepo.auth.currentUser.photoURL,
@@ -107,7 +107,10 @@ class PostViewModel extends ChangeNotifier {
       BuildContext context, int index, PostType type) async {
     if (type == PostType.Me) {
       selectedActivity = myPosts[index].activity;
-      pushNewScreen(context, screen: ActivityView(), withNavBar: false);
+      pushNewScreen(context,
+          screen: ActivityView(type: ActivityViewType.FromHomeScreen),
+          withNavBar: false,
+          pageTransitionAnimation: PageTransitionAnimation.cupertino);
       isLoading = true;
     }
   }
@@ -142,14 +145,38 @@ class PostViewModel extends ChangeNotifier {
 
   void checkExistData() async {
     await Future.delayed(Duration(seconds: 4));
+    if (myPosts.isNotEmpty) return;
     myPostsFuture = Future.value(<Post>[]);
   }
 
+  void updatePostLikeCommentCount() async {
+    var changesStream = RunningRepo.getUserPostChanges();
+    bool isFirst = true;
+    await for (var change in changesStream) {
+      if (isFirst) {
+        isFirst = false;
+        return;
+      }
+      change.forEach((changedPost) {
+        print('post ${changedPost.activity.describe} changed');
+        int index =
+            myPosts.indexWhere((myPost) => myPost.postID == changedPost.postID);
+        if (index < 0) return;
+        myPosts[index] = changedPost;
+      });
+    }
+  }
+
   Future<void> getMyPost() async {
-    var stream = RunningRepo.getUserPost();
-    //checkExistData();
+    var stream = RunningRepo.getUserPostChanges();
+    myPosts.clear();
+
+    //todo bỏ comment dòng này
+    checkExistData();
     await for (var posts in stream) {
-      if (posts.length == myPosts.length) return;
+      /* if (posts.length == myPosts.length) {
+        return;
+      }
       myPosts.clear();
       myPosts.addAll(posts);
       isLiked = myPosts
@@ -159,9 +186,24 @@ class PostViewModel extends ChangeNotifier {
           )
           .toList();
       myPostsFuture = Future.value(myPosts);
-      print(
-          'new data length ${posts.length}   mypost length ${myPosts.length}');
-      notifyListeners();
+      notifyListeners();*/
+      if (myPosts.isEmpty) {
+        myPosts.addAll(posts);
+        isLiked = myPosts
+            .map(
+              (post) => post.like.any((userLiked) =>
+                  userLiked.userID == RunningRepo.auth.currentUser.uid),
+            )
+            .toList();
+        myPostsFuture = Future.value(myPosts);
+      } else {
+        posts.forEach((changedPost) {
+          int index =
+              myPosts.indexWhere((post) => post.postID == changedPost.postID);
+          print('index of changed post $index');
+          if (index >= 0) myPosts[index] = changedPost;
+        });
+      }
     }
   }
 }

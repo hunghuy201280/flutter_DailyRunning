@@ -7,8 +7,12 @@ import 'package:shimmer/shimmer.dart';
 class AvatarView extends StatelessWidget {
   final String imageUrl;
   final Function onCameraTap;
+  final bool canChangeAvatar;
 
-  const AvatarView({@required this.imageUrl, @required this.onCameraTap});
+  const AvatarView(
+      {@required this.imageUrl,
+      @required this.onCameraTap,
+      this.canChangeAvatar = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +33,25 @@ class AvatarView extends StatelessWidget {
             ),
           ),
         ),
-        Positioned.fill(
-          bottom: -13,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Material(
-              type: MaterialType.circle,
-              color: kConcreteColor,
-              child: InkWell(
-                onTap: onCameraTap,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Ink(
-                    width: 18,
-                    height: 18,
-                    child: SvgPicture.asset(
-                      'assets/images/ic_camera.svg',
+        Visibility(
+          visible: canChangeAvatar,
+          child: Positioned.fill(
+            bottom: -13,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Material(
+                type: MaterialType.circle,
+                color: kConcreteColor,
+                child: InkWell(
+                  onTap: onCameraTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Ink(
+                      width: 18,
+                      height: 18,
+                      child: SvgPicture.asset(
+                        'assets/images/ic_camera.svg',
+                      ),
                     ),
                   ),
                 ),

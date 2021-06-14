@@ -1,3 +1,4 @@
+import 'package:daily_running/model/home/search/search_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,10 @@ class SearchButton extends StatelessWidget {
       opacity:
           CustomCollapseAppbarDelegate.disappear(shrinkOffset, expandedHeight),
       child: InkResponse(
-        onTap: () {},
+        onTap: () {
+          Provider.of<SearchViewModel>(context, listen: false)
+              .showSearchBarAnimated();
+        },
         child: SvgPicture.asset(
           'assets/images/ic_search.svg',
           color: Colors.black,
