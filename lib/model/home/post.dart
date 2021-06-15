@@ -70,12 +70,12 @@ class Comment {
   String avatarUrl;
 
   Comment(
-      {this.commentID,
-      this.content,
-      this.dateCreated,
-      this.ownerID,
-      this.ownerName,
-      this.avatarUrl});
+      {@required this.commentID,
+      @required this.content,
+      @required this.dateCreated,
+      @required this.ownerID,
+      @required this.ownerName,
+      @required this.avatarUrl});
 
   Comment.fromJson(Map<String, dynamic> json) {
     commentID = json['commentID'];

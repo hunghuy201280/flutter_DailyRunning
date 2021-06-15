@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
@@ -6,10 +7,12 @@ import 'package:daily_running/model/user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
+import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -201,6 +204,8 @@ class OtherProfilePostView extends StatelessWidget {
                   isLoading: isLoading,
                   onTap: () {
                     //TODO on like tap
+                    Provider.of<OtherProfileViewModel>(context, listen: false)
+                        .toggleLike(index);
                   },
                 ),
                 SizedBox(
@@ -215,6 +220,13 @@ class OtherProfilePostView extends StatelessWidget {
                   isLoading: isLoading,
                   onTap: () {
                     //TODO on cmt tap
+                    Provider.of<CommentViewModel>(context, listen: false)
+                        .onPostSelected(otherProfileViewModel.posts[index]);
+                    pushNewScreen(context,
+                        screen: CommentScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
                   },
                 ),
               ],

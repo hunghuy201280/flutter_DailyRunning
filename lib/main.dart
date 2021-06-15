@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'model/home/comment_view_model.dart';
 import 'model/home/post_view_model.dart';
 import 'model/home/search/search_view_model.dart';
 import 'model/login/register_view_model.dart';
@@ -75,6 +76,8 @@ class DailyRunning extends StatelessWidget {
             create: (context) => SearchViewModel()),
         ChangeNotifierProvider<OtherProfileViewModel>(
             create: (context) => OtherProfileViewModel()),
+        ChangeNotifierProvider<CommentViewModel>(
+            create: (context) => CommentViewModel()),
         ChangeNotifierProxyProvider<OtherProfileViewModel,
                 OtherFollowViewModel>(
             create: (context) => OtherFollowViewModel(),

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/home/post.dart';
+import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
@@ -17,21 +18,25 @@ class OtherProfileViewModel extends ChangeNotifier {
   RunningUser selectedUser;
   bool _isLoading = false;
   bool _isFollowed = false;
+
   set isLoading(val) {
     _isLoading = val;
     notifyListeners();
   }
 
   bool get isFollowed => _isFollowed;
+
   set isFollowed(val) {
     _isFollowed = val;
     notifyListeners();
   }
 
   Future<bool> loadingFuture;
+
   bool get isLoading => _isLoading;
   List<Post> posts = [];
   List<bool> isLiked = [];
+
   Future<void> onUserSelected(String uid) async {
     isLoading = true;
     selectedUser = await RunningRepo.getUserById(uid);
@@ -51,9 +56,11 @@ class OtherProfileViewModel extends ChangeNotifier {
   List<double> distancesStatistic = [0, 0, 0];
   List<int> timeWorkingStatistic = [0, 0, 0];
   List<int> workingCountStatistic = [0, 0, 0];
+
   //0= week 1= month 2= year
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   List<Activity> userActivities = [];
+
   void resetData() {
     distancesStatistic = [0, 0, 0];
     timeWorkingStatistic = [0, 0, 0];
@@ -131,6 +138,7 @@ class OtherProfileViewModel extends ChangeNotifier {
     getMonthStatistic();
     getYearStatistic();
   }
+
 //endregion
 
   //region follow
@@ -145,6 +153,19 @@ class OtherProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleLike(int index) {
+    if (!isLiked[index]) {
+      posts[index].like.add(PostViewModel.myLike);
+      isLiked[index] = true;
+    } else {
+      posts[index].like.removeWhere(
+          (likeUser) => likeUser.userID == PostViewModel.myLike.userID);
+      isLiked[index] = false;
+    }
+    RunningRepo.updateLikeForPost(posts[index], posts[index].like);
+
+    notifyListeners();
+  }
   //endregion
 
 //region map view

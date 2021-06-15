@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
+import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
@@ -259,7 +261,7 @@ class PostView extends StatelessWidget {
                   onTap: () {
                     //TODO on like tap
                     Provider.of<PostViewModel>(context, listen: false)
-                        .toggleLike(index);
+                        .toggleLike(index, type);
                   },
                 ),
                 SizedBox(
@@ -277,6 +279,15 @@ class PostView extends StatelessWidget {
                   isLoading: isLoading,
                   onTap: () {
                     //TODO on cmt tap
+                    Provider.of<CommentViewModel>(context, listen: false)
+                        .onPostSelected(type == PostType.Me
+                            ? postViewModel.myPosts[index]
+                            : postViewModel.followingPosts[index]);
+                    pushNewScreen(context,
+                        screen: CommentScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
                   },
                 ),
               ],
@@ -317,7 +328,7 @@ class PostBottomIcon extends StatelessWidget {
               InkWell(
                 child: SvgPicture.asset(
                   iconName,
-                  height: 13,
+                  height: 15,
                 ),
                 onTap: onTap,
               ),

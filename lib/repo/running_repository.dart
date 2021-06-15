@@ -32,12 +32,16 @@ class RunningRepo {
   }
 
   static updateLikeForPost(Post post, List<Like> likes) async {
-    _firestore
-        .collection('post')
-        .doc(_auth.currentUser.uid)
-        .collection('user_posts')
-        .doc(post.postID)
-        .update({'like': likes.map((v) => v.toJson()).toList()});
+    try {
+      _firestore
+          .collection('post')
+          .doc(post.ownerID)
+          .collection('user_posts')
+          .doc(post.postID)
+          .update({'like': likes.map((v) => v.toJson()).toList()});
+    } on Exception catch (e) {
+      print(e.toString());
+    }
   }
 
   static Future<void> createPost(Post post) async {
@@ -72,6 +76,18 @@ class RunningRepo {
       yield newPost.docChanges
           .map((posts) => Post.fromJson(posts.doc.data()))
           .toList();
+    }
+  }
+
+  static Stream<Post> getPostStream(Post post) async* {
+    var stream = _firestore
+        .collection('post')
+        .doc(post.ownerID)
+        .collection('user_posts')
+        .doc(post.postID)
+        .snapshots();
+    await for (var change in stream) {
+      yield Post.fromJson(change.data());
     }
   }
 
@@ -140,7 +156,7 @@ class RunningRepo {
     return res.docs.map((e) => Follow.fromJson(e.data())).toList();
   }
 
-  static void followUser(RunningUser user) async {
+  static Future followUser(RunningUser user) async {
     try {
       await _firestore
           .collection('follow')
@@ -167,7 +183,7 @@ class RunningRepo {
     }
   }
 
-  static void unfollowUser(String uid) async {
+  static Future unfollowUser(String uid) async {
     await _firestore
         .collection('follow')
         .doc(_auth.currentUser.uid)
@@ -393,12 +409,23 @@ class RunningRepo {
         .updateProfile(displayName: user.displayName, photoURL: user.avatarUri);
   }
 
+  static Future postComment(Post post, Comment comment) async {
+    post.comment.add(comment);
+    _firestore
+        .collection('post')
+        .doc(post.ownerID)
+        .collection('user_posts')
+        .doc(post.postID)
+        .update({'comment': post.comment.map((v) => v.toJson()).toList()});
+  }
+
   static Future<String> createUser(RunningUser user, String password) async {
     UserCredential credential;
     String result;
     try {
       credential = await _auth.createUserWithEmailAndPassword(
           email: user.email, password: password);
+      updateUserInfo(user);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':

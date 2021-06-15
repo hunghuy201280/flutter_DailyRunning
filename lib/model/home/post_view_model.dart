@@ -43,7 +43,7 @@ class PostViewModel extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
-  Like myLike = Like(
+  static Like myLike = Like(
     userID: RunningRepo.auth.currentUser.uid,
     avatarUrl: RunningRepo.auth.currentUser.photoURL,
     userName: RunningRepo.auth.currentUser.displayName,
@@ -148,28 +148,45 @@ class PostViewModel extends ChangeNotifier {
     isLoading = false;
   }
 
-  void toggleLike(index) async {
-    if (!isLikedMyPost[index]) {
-      myPosts[index].like.add(myLike);
-      isLikedMyPost[index] = true;
+  void toggleLike(index, PostType type) async {
+    if (type == PostType.Me) {
+      if (!isLikedMyPost[index]) {
+        myPosts[index].like.add(myLike);
+        isLikedMyPost[index] = true;
+      } else {
+        myPosts[index]
+            .like
+            .removeWhere((likeUser) => likeUser.userID == myLike.userID);
+        isLikedMyPost[index] = false;
+      }
+      RunningRepo.updateLikeForPost(myPosts[index], myPosts[index].like);
     } else {
-      myPosts[index]
-          .like
-          .removeWhere((likeUser) => likeUser.userID == myLike.userID);
-      isLikedMyPost[index] = false;
+      if (!isLikedFollowingPost[index]) {
+        followingPosts[index].like.add(myLike);
+        isLikedFollowingPost[index] = true;
+      } else {
+        followingPosts[index]
+            .like
+            .removeWhere((likeUser) => likeUser.userID == myLike.userID);
+        isLikedFollowingPost[index] = false;
+      }
+      RunningRepo.updateLikeForPost(
+          followingPosts[index], followingPosts[index].like);
     }
-    RunningRepo.updateLikeForPost(myPosts[index], myPosts[index].like);
     notifyListeners();
   }
 
   void checkExistMyPostData() async {
     await Future.delayed(Duration(seconds: 4));
     if (myPosts.isNotEmpty) return;
+    myPostLoading = false;
   }
 
   void checkExistFollowingPostData() async {
     await Future.delayed(Duration(seconds: 4));
+    print(followingPosts.isEmpty);
     if (followingPosts.isNotEmpty) return;
+    followingPostLoading = false;
   }
 
   Future<void> getMyPost() async {

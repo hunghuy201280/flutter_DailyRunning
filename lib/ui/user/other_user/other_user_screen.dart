@@ -45,7 +45,6 @@ class OtherUserScreen extends StatelessWidget {
                                   ),
                                 ),
                                 child: AvatarView(
-                                  //image: AssetImage('assets/images/drip_doge.png'),
                                   imageUrl:
                                       otherViewModel.selectedUser.avatarUri,
                                   onCameraTap: () {},
@@ -57,6 +56,23 @@ class OtherUserScreen extends StatelessWidget {
                           Align(
                             child: kAppNameTextWhite,
                             alignment: Alignment.topCenter,
+                          ),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkResponse(
+                                  onTap: () => Navigator.pop(context),
+                                  radius: 16,
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

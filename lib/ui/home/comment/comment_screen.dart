@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
+import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/home/widgets/post_list_view.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
 import 'package:daily_running/utils/constant.dart';
@@ -32,39 +34,48 @@ class CommentScreen extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CommentItem(
-                        userName: 'username username username ',
-                        content:
-                            'describe describe describe describe describe describe describe describe describe describe ',
-                        time: '2d',
-                      ),
-                      Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return CommentItem(
-                              userName: 'username username username ',
-                              content:
-                                  'describe describe describe describe describe describe describe describe describe describe ',
-                              time: '2d',
-                            );
-                          },
-                          itemCount: 10,
+                child: Consumer<CommentViewModel>(
+                  builder: (context, viewModel, _) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CommentItem(
+                          avatarUrl: viewModel.selectedPost.ownerAvatarUrl,
+                          userName: viewModel.selectedPost.ownerName,
+                          content: viewModel.selectedPost.activity.describe,
+                          time: '2d',
                         ),
-                      ),
-                    ],
+                        Divider(
+                          thickness: 1,
+                          color: Colors.grey,
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: CommentItem(
+                                  avatarUrl: viewModel
+                                      .selectedPost.comment[index].avatarUrl,
+                                  userName: viewModel
+                                      .selectedPost.comment[index].ownerName,
+                                  content: viewModel
+                                      .selectedPost.comment[index].content,
+                                  time: '2d',
+                                ),
+                              );
+                            },
+                            itemCount: viewModel.selectedPost.comment.length,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -78,16 +89,25 @@ class CommentScreen extends StatelessWidget {
               child: Row(
                 children: [
                   CachedNetworkImage(
-                    imageUrl: kLightImage,
+                    imageUrl: RunningRepo.auth.currentUser.photoURL,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
                       backgroundImage: imageProvider,
                       radius: 30,
+                    ),
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      child: CircleAvatar(
+                        radius: 30,
+                      ),
+                      baseColor: kSecondaryColor,
+                      highlightColor: Colors.grey[100],
                     ),
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: TextField(
+                        controller:
+                            Provider.of<CommentViewModel>(context).controller,
                         decoration: InputDecoration(
                           hintText: 'Thêm bình luận...',
                           border: OutlineInputBorder(
@@ -103,7 +123,11 @@ class CommentScreen extends StatelessWidget {
                               primary: kPrimaryColor,
                               padding: EdgeInsets.zero,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Provider.of<CommentViewModel>(context,
+                                      listen: false)
+                                  .onCommentPost();
+                            },
                             child: Text(
                               'Đăng',
                               style: kBigTitleTextStyle.copyWith(
@@ -130,9 +154,13 @@ class CommentItem extends StatelessWidget {
   final String userName;
   final String content;
   final String time;
+  final String avatarUrl;
 
   const CommentItem(
-      {@required this.userName, @required this.content, @required this.time});
+      {@required this.userName,
+      @required this.content,
+      @required this.time,
+      @required this.avatarUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +168,17 @@ class CommentItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CachedNetworkImage(
-          imageUrl: kLightImage,
+          imageUrl: avatarUrl,
           imageBuilder: (context, imageProvider) => CircleAvatar(
             backgroundImage: imageProvider,
             radius: 22,
+          ),
+          placeholder: (context, url) => Shimmer.fromColors(
+            child: CircleAvatar(
+              radius: 22,
+            ),
+            baseColor: kSecondaryColor,
+            highlightColor: Colors.grey[100],
           ),
         ),
         SizedBox(
@@ -161,7 +196,7 @@ class CommentItem extends StatelessWidget {
                       fontSize: 14, color: kMineShaftColor),
                   children: [
                     TextSpan(
-                      text: content,
+                      text: '  $content',
                       style: kAvo400TextStyle,
                     ),
                   ],
