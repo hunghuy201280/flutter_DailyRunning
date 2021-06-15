@@ -32,6 +32,8 @@ class MainScreen extends StatelessWidget {
         .setUpdateUser(currentUser);
     Provider.of<StatisticViewModel>(context, listen: false).getStatistic();
     Provider.of<PostViewModel>(context, listen: false).getMyPost();
+    Provider.of<PostViewModel>(context, listen: false).getMyFollowingPost();
+
     Provider.of<SearchViewModel>(context, listen: false).getSearchData();
   }
 

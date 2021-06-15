@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:uuid/uuid.dart';
+import 'package:async/async.dart' as FlutterAsync;
 
 class RunningRepo {
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -71,6 +72,53 @@ class RunningRepo {
       yield newPost.docChanges
           .map((posts) => Post.fromJson(posts.doc.data()))
           .toList();
+    }
+  }
+
+  static Stream<List<Post>> getUserPostChangesByID(String uid) async* {
+    await for (var newPost in _firestore
+        .collection('post')
+        .doc(uid)
+        .collection('user_posts')
+        .snapshots()) {
+      yield newPost.docChanges
+          .map((posts) => Post.fromJson(posts.doc.data()))
+          .toList();
+    }
+  }
+
+  static Future updateStreamGroup(
+      FlutterAsync.StreamGroup<List<Post>> followingPostStreamGroup) async {
+    List<Follow> following = [];
+    List<Stream<List<Post>>> followingPostStreams = [];
+    var stream = RunningRepo.getFollowingStream();
+    await for (var event in stream) {
+      event.docChanges.forEach((change) {
+        Follow followChange = Follow.fromJson(change.doc.data());
+        if (change.type == DocumentChangeType.added) {
+          following.add(followChange);
+          var newStream = getUserPostChangesByID(followChange.uid);
+          followingPostStreams.add(newStream);
+          followingPostStreamGroup.add(newStream);
+        } else if (change.type == DocumentChangeType.removed) {
+          int deletedIndex = following
+              .indexWhere((element) => element.uid == followChange.uid);
+          if (deletedIndex > 0) {
+            following.removeAt(deletedIndex);
+            var deletedStream = followingPostStreams.removeAt(deletedIndex);
+            followingPostStreamGroup.remove(deletedStream);
+          }
+        }
+      });
+    }
+  }
+
+  static Stream<List<Post>> getFollowingPostChanges() async* {
+    FlutterAsync.StreamGroup<List<Post>> followingPostStreamGroup =
+        FlutterAsync.StreamGroup<List<Post>>();
+    updateStreamGroup(followingPostStreamGroup);
+    await for (var change in followingPostStreamGroup.stream) {
+      yield change;
     }
   }
 

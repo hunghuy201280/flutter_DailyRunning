@@ -26,35 +26,32 @@ class _PostListViewState extends State<PostListView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FutureBuilder<List<Post>>(
-      future: widget.type == PostType.Me
-          ? Provider.of<PostViewModel>(context).myPostsFuture
-          : PostListView.getTempActivity(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Post> posts = snapshot.data;
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return PostView(
-                index: index,
-                isLoading: !(snapshot.connectionState == ConnectionState.done),
-                type: widget.type,
-              );
-            },
-            itemCount: posts.length,
-          );
-        } else
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              return PostView(
-                index: -1,
-                isLoading: true,
-                type: widget.type,
-              );
-            },
-            itemCount: 3,
-          );
-      },
+    return Consumer<PostViewModel>(
+      builder: (context, viewModel, _) => (widget.type == PostType.Me
+              ? viewModel.myPostLoading
+              : viewModel.followingPostLoading)
+          ? ListView.builder(
+              itemBuilder: (context, index) {
+                return PostView(
+                  index: -1,
+                  isLoading: true,
+                  type: widget.type,
+                );
+              },
+              itemCount: 3,
+            )
+          : ListView.builder(
+              itemBuilder: (context, index) {
+                return PostView(
+                  index: index,
+                  isLoading: false,
+                  type: widget.type,
+                );
+              },
+              itemCount: widget.type == PostType.Me
+                  ? viewModel.myPosts.length
+                  : viewModel.followingPosts.length,
+            ),
     );
   }
 
