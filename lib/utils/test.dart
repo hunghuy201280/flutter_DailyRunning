@@ -1,7 +1,22 @@
 import 'package:async/async.dart';
 
 void main() {
-  listenString();
+  List<bool> medalAchieved = List.filled(5, false).toList();
+  double distance = 60;
+  if (distance >= 1000) {
+    medalAchieved = List.filled(5, true).toList();
+  } else if (distance >= 500) {
+    medalAchieved = List.filled(4, true).toList()..add(false);
+  } else if (distance >= 200) {
+    medalAchieved = List.filled(3, true).toList()
+      ..addAll(List.filled(2, false));
+  } else if (distance >= 100) {
+    medalAchieved = List.filled(2, true).toList()
+      ..addAll(List.filled(3, false));
+  } else if (distance >= 50) {
+    medalAchieved = [true]..addAll(List.filled(4, false));
+  }
+  medalAchieved.forEach((element) => print(element));
 }
 
 void listenString() async {

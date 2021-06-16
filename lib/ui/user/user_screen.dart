@@ -37,13 +37,6 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class UserScreen extends StatelessWidget {
   static String id = 'UserScreen';
-  static final List<Widget> achievements = [
-    for (int i = 0; i < 10; i++)
-      MedalItem(
-        image: AssetImage('assets/images/medal_${(i % 5) + 1}.png'),
-        onTap: () {},
-      ),
-  ];
 
   void onLogOutCleanUp(BuildContext context) {
     Provider.of<PostViewModel>(context, listen: false).resetData();
@@ -169,8 +162,12 @@ class UserScreen extends StatelessWidget {
                         child: ListView.separated(
                           padding: EdgeInsets.zero,
                           scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemBuilder: (context, index) => achievements[index],
+                          itemCount: Provider.of<StatisticViewModel>(context)
+                              .medals
+                              .length,
+                          itemBuilder: (context, index) =>
+                              Provider.of<StatisticViewModel>(context)
+                                  .medals[index],
                           separatorBuilder: (context, index) => SizedBox(
                             width: 40,
                           ),

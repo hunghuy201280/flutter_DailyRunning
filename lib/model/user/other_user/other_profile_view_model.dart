@@ -8,6 +8,7 @@ import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/record/activity_view_screen.dart';
+import 'package:daily_running/ui/user/widgets/medal_item.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -60,6 +61,8 @@ class OtherProfileViewModel extends ChangeNotifier {
   //0= week 1= month 2= year
   DateFormat dateFormat = DateFormat('dd/MM/yyyy');
   List<Activity> userActivities = [];
+  List<bool> medalAchieved = List.filled(5, false).toList();
+  List<MedalItem> medals = [];
 
   void resetData() {
     distancesStatistic = [0, 0, 0];
@@ -68,6 +71,8 @@ class OtherProfileViewModel extends ChangeNotifier {
     userActivities = [];
     mapMarkers.clear();
     _polylines.clear();
+    medalAchieved = List.filled(5, false).toList();
+    medals = [];
   }
 
   void getWeekStatistic() async {
@@ -129,6 +134,42 @@ class OtherProfileViewModel extends ChangeNotifier {
     });
     workingCountStatistic[2] = yearActivity.length;
     distancesStatistic[2] /= 1000;
+    getMedal();
+  }
+
+  void getMedal() async {
+    medalAchieved = List.filled(5, false).toList();
+    medals.clear();
+    double distance = distancesStatistic[2];
+    if (distance >= 1000) {
+      medalAchieved = List.filled(5, true).toList();
+    } else if (distance >= 500) {
+      medalAchieved = List.filled(4, true).toList()..add(false);
+    } else if (distance >= 200) {
+      medalAchieved = List.filled(3, true).toList()
+        ..addAll(List.filled(2, false));
+    } else if (distance >= 100) {
+      medalAchieved = List.filled(2, true).toList()
+        ..addAll(List.filled(3, false));
+    } else if (distance >= 50) {
+      medalAchieved = [true]..addAll(List.filled(4, false));
+    }
+    for (int i = 0; i < 5; i++) {
+      if (medalAchieved[i]) {
+        medals.add(
+          MedalItem(
+            image: AssetImage('assets/images/medal_${i + 1}.png'),
+            onTap: () {},
+          ),
+        );
+      } else {
+        medals.add(MedalItem(
+          image: AssetImage('assets/images/medal_${i + 1}_greyscale.png'),
+          onTap: () {},
+        ));
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> getStatistic() async {

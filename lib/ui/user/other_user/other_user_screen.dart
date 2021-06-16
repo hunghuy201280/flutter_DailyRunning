@@ -146,9 +146,9 @@ class OtherUserScreen extends StatelessWidget {
                               child: ListView.separated(
                                 padding: EdgeInsets.zero,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 10,
+                                itemCount: otherViewModel.medals.length,
                                 itemBuilder: (context, index) =>
-                                    UserScreen.achievements[index],
+                                    otherViewModel.medals[index],
                                 separatorBuilder: (context, index) => SizedBox(
                                   width: 40,
                                 ),
