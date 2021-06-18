@@ -30,8 +30,6 @@ class CommentViewModel extends ChangeNotifier {
             dateCreated:
                 RecordViewModel.activityDateFormat.format(DateTime.now()),
             ownerID: RunningRepo.auth.currentUser.uid,
-            ownerName: RunningRepo.auth.currentUser.displayName,
-            avatarUrl: RunningRepo.auth.currentUser.photoURL,
           ));
       controller.clear();
     }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/home/widgets/post_list_view.dart';
@@ -43,7 +44,8 @@ class CommentScreen extends StatelessWidget {
                       children: [
                         CommentItem(
                           avatarUrl: viewModel.selectedPost.ownerAvatarUrl,
-                          userName: viewModel.selectedPost.ownerName,
+                          ownerName: viewModel.selectedPost.ownerName,
+                          ownerID: viewModel.selectedPost.ownerID,
                           content: viewModel.selectedPost.activity.describe,
                           time: '2d',
                         ),
@@ -61,10 +63,8 @@ class CommentScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8),
                                 child: CommentItem(
-                                  avatarUrl: viewModel
-                                      .selectedPost.comment[index].avatarUrl,
-                                  userName: viewModel
-                                      .selectedPost.comment[index].ownerName,
+                                  ownerID: viewModel
+                                      .selectedPost.comment[index].ownerID,
                                   content: viewModel
                                       .selectedPost.comment[index].content,
                                   time: '2d',
@@ -150,66 +150,186 @@ class CommentScreen extends StatelessWidget {
   }
 }
 
-class CommentItem extends StatelessWidget {
-  final String userName;
+class CommentItem extends StatefulWidget {
+  final String ownerID;
   final String content;
   final String time;
   final String avatarUrl;
-
-  const CommentItem(
-      {@required this.userName,
-      @required this.content,
-      @required this.time,
-      @required this.avatarUrl});
-
+  final String ownerName;
+  const CommentItem({
+    @required this.content,
+    @required this.time,
+    @required this.ownerID,
+    this.avatarUrl,
+    this.ownerName,
+  });
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CachedNetworkImage(
-          imageUrl: avatarUrl,
-          imageBuilder: (context, imageProvider) => CircleAvatar(
-            backgroundImage: imageProvider,
-            radius: 22,
-          ),
-          placeholder: (context, url) => Shimmer.fromColors(
-            child: CircleAvatar(
-              radius: 22,
-            ),
-            baseColor: kSecondaryColor,
-            highlightColor: Colors.grey[100],
-          ),
+  _CommentItemState createState() => _CommentItemState();
+
+  static final placeHolder = Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Shimmer.fromColors(
+        child: CircleAvatar(
+          radius: 22,
         ),
-        SizedBox(
-          width: 12,
-        ),
-        Expanded(
+        baseColor: kSecondaryColor,
+        highlightColor: Colors.grey[100],
+      ),
+      SizedBox(
+        width: 12,
+      ),
+      Expanded(
+        child: Shimmer.fromColors(
+          baseColor: kSecondaryColor,
+          highlightColor: Colors.grey[100],
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               RichText(
                 text: TextSpan(
-                  text: userName,
+                  text: '           ',
                   style: kBigTitleTextStyle.copyWith(
                       fontSize: 14, color: kMineShaftColor),
                   children: [
                     TextSpan(
-                      text: '  $content',
+                      text:
+                          '                                                         ',
                       style: kAvo400TextStyle,
                     ),
                   ],
                 ),
               ),
               Text(
-                time,
+                '             ',
                 style: kAvo400TextStyle.copyWith(color: kDoveGrayColor),
               ),
             ],
           ),
-        )
-      ],
-    );
+        ),
+      )
+    ],
+  );
+}
+
+class _CommentItemState extends State<CommentItem> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ownerFuture = RunningRepo.getUserById(widget.ownerID);
+  }
+
+  Future<RunningUser> ownerFuture;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.avatarUrl == null || widget.ownerName == null)
+      return FutureBuilder<RunningUser>(
+        future: ownerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            RunningUser owner = snapshot.data;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: owner.avatarUri,
+                  imageBuilder: (context, imageProvider) => CircleAvatar(
+                    backgroundImage: imageProvider,
+                    radius: 22,
+                  ),
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    child: CircleAvatar(
+                      radius: 22,
+                    ),
+                    baseColor: kSecondaryColor,
+                    highlightColor: Colors.grey[100],
+                  ),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: owner.displayName,
+                          style: kBigTitleTextStyle.copyWith(
+                              fontSize: 14, color: kMineShaftColor),
+                          children: [
+                            TextSpan(
+                              text: '  ${widget.content}',
+                              style: kAvo400TextStyle,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        widget.time,
+                        style: kAvo400TextStyle.copyWith(color: kDoveGrayColor),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          } else
+            return CommentItem.placeHolder;
+        },
+      );
+    else
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CachedNetworkImage(
+            imageUrl: widget.avatarUrl,
+            imageBuilder: (context, imageProvider) => CircleAvatar(
+              backgroundImage: imageProvider,
+              radius: 22,
+            ),
+            placeholder: (context, url) => Shimmer.fromColors(
+              child: CircleAvatar(
+                radius: 22,
+              ),
+              baseColor: kSecondaryColor,
+              highlightColor: Colors.grey[100],
+            ),
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    text: widget.ownerName,
+                    style: kBigTitleTextStyle.copyWith(
+                        fontSize: 14, color: kMineShaftColor),
+                    children: [
+                      TextSpan(
+                        text: '  ${widget.content}',
+                        style: kAvo400TextStyle,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  widget.time,
+                  style: kAvo400TextStyle.copyWith(color: kDoveGrayColor),
+                ),
+              ],
+            ),
+          )
+        ],
+      );
   }
 }

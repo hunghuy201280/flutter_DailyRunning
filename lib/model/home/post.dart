@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 class Post {
   String postID;
   List<Comment> comment;
-  List<Like> like;
+  List<String> likeUserID;
   Activity activity;
   String ownerID;
   String ownerAvatarUrl;
@@ -13,7 +13,7 @@ class Post {
   Post({
     @required this.postID,
     this.comment = const [],
-    this.like = const [],
+    this.likeUserID = const [],
     @required this.activity,
     @required this.ownerID,
     @required this.ownerAvatarUrl,
@@ -29,9 +29,9 @@ class Post {
       });
     }
     if (json['like'] != null) {
-      like = [];
+      likeUserID = [];
       json['like'].forEach((v) {
-        like.add(new Like.fromJson(v));
+        likeUserID.add(v);
       });
     }
     activity = json['activity'] != null
@@ -48,8 +48,8 @@ class Post {
     if (this.comment != null) {
       data['comment'] = this.comment.map((v) => v.toJson()).toList();
     }
-    if (this.like != null) {
-      data['like'] = this.like.map((v) => v.toJson()).toList();
+    if (this.likeUserID != null) {
+      data['like'] = this.likeUserID;
     }
     if (this.activity != null) {
       data['activity'] = this.activity.toJson();
@@ -66,24 +66,19 @@ class Comment {
   String content;
   String dateCreated;
   String ownerID;
-  String ownerName;
-  String avatarUrl;
 
-  Comment(
-      {@required this.commentID,
-      @required this.content,
-      @required this.dateCreated,
-      @required this.ownerID,
-      @required this.ownerName,
-      @required this.avatarUrl});
+  Comment({
+    @required this.commentID,
+    @required this.content,
+    @required this.dateCreated,
+    @required this.ownerID,
+  });
 
   Comment.fromJson(Map<String, dynamic> json) {
     commentID = json['commentID'];
     content = json['content'];
     dateCreated = json['dateCreated'];
     ownerID = json['ownerID'];
-    ownerName = json['ownerName'];
-    avatarUrl = json['avatarUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -92,30 +87,6 @@ class Comment {
     data['content'] = this.content;
     data['dateCreated'] = this.dateCreated;
     data['ownerID'] = this.ownerID;
-    data['ownerName'] = this.ownerName;
-    data['avatarUrl'] = this.avatarUrl;
-    return data;
-  }
-}
-
-class Like {
-  String userID;
-  String avatarUrl;
-  String userName;
-
-  Like({this.userID, this.avatarUrl, this.userName});
-
-  Like.fromJson(Map<String, dynamic> json) {
-    userID = json['userID'];
-    avatarUrl = json['avatarUrl'];
-    userName = json['userName'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['userID'] = this.userID;
-    data['avatarUrl'] = this.avatarUrl;
-    data['userName'] = this.userName;
     return data;
   }
 }

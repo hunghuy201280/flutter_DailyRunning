@@ -199,7 +199,7 @@ class OtherProfilePostView extends StatelessWidget {
                       : 'assets/images/ic_heart${otherProfileViewModel.isLiked[index] ? '_filled' : ''}.svg',
                   value: index == -1
                       ? '0'
-                      : otherProfileViewModel.posts[index].like.length
+                      : otherProfileViewModel.posts[index].likeUserID.length
                           .toString(),
                   isLoading: isLoading,
                   onTap: () {

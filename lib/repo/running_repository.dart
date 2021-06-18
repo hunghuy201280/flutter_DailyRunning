@@ -22,6 +22,14 @@ class RunningRepo {
   static FacebookAuth get fbAuth => _fbAuth;
   static FirebaseAuth get auth => _auth;
   static Uuid uuid = Uuid();
+  static String myLike = RunningRepo.auth.currentUser.uid;
+
+  static void resetData() {
+    _firestore = FirebaseFirestore.instance;
+    _auth = FirebaseAuth.instance;
+    _fbAuth = FacebookAuth.instance;
+    myLike = RunningRepo.auth.currentUser.uid;
+  }
 
   static Stream<List<RunningUser>> getSearchData() async* {
     await for (var datas in _firestore.collection('users').snapshots()) {
@@ -31,14 +39,14 @@ class RunningRepo {
     }
   }
 
-  static updateLikeForPost(Post post, List<Like> likes) async {
+  static updateLikeForPost(Post post, List<String> likes) async {
     try {
       _firestore
           .collection('post')
           .doc(post.ownerID)
           .collection('user_posts')
           .doc(post.postID)
-          .update({'like': likes.map((v) => v.toJson()).toList()});
+          .update({'like': likes});
     } on Exception catch (e) {
       print(e.toString());
     }
@@ -165,8 +173,6 @@ class RunningRepo {
           .doc(user.userID)
           .set(Follow(
             uid: user.userID,
-            avatarUrl: user.avatarUri,
-            displayName: user.displayName,
           ).toJson());
       await _firestore
           .collection('follow')
@@ -175,8 +181,6 @@ class RunningRepo {
           .doc(_auth.currentUser.uid)
           .set(Follow(
             uid: _auth.currentUser.uid,
-            avatarUrl: _auth.currentUser.photoURL,
-            displayName: _auth.currentUser.displayName,
           ).toJson());
     } on Exception catch (e) {
       print(e.toString());

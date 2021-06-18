@@ -186,7 +186,7 @@ class PostView extends StatelessWidget {
               children: [
                 PostColumnText(
                   value:
-                      '${isLoading ? 0 : (type == PostType.Me ? postViewModel.myPosts[index].activity.distance : postViewModel.followingPosts[index].activity.distance / 1000).toStringAsFixed(2)}Km',
+                      '${isLoading ? 0 : (type == PostType.Me ? postViewModel.myPosts[index].activity.distance / 1000 : postViewModel.followingPosts[index].activity.distance / 1000).toStringAsFixed(2)}Km',
                   description: 'Quãng đường',
                   isLoading: isLoading,
                 ),
@@ -254,8 +254,10 @@ class PostView extends StatelessWidget {
                   value: index == -1
                       ? '0'
                       : type == PostType.Me
-                          ? postViewModel.myPosts[index].like.length.toString()
-                          : postViewModel.followingPosts[index].like.length
+                          ? postViewModel.myPosts[index].likeUserID.length
+                              .toString()
+                          : postViewModel
+                              .followingPosts[index].likeUserID.length
                               .toString(),
                   isLoading: isLoading,
                   onTap: () {

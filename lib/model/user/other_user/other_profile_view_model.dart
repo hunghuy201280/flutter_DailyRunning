@@ -45,8 +45,8 @@ class OtherProfileViewModel extends ChangeNotifier {
     posts = await RunningRepo.getUserPostById(uid);
     isFollowed = await RunningRepo.checkFollow(uid);
     isLiked = posts
-        .map((e) => e.like.any(
-            (element) => element.userID == RunningRepo.auth.currentUser.uid))
+        .map((e) => e.likeUserID
+            .any((element) => element == RunningRepo.auth.currentUser.uid))
         .toList();
     await getStatistic();
     loadingFuture = Future.value(false);
@@ -196,14 +196,15 @@ class OtherProfileViewModel extends ChangeNotifier {
 
   void toggleLike(int index) {
     if (!isLiked[index]) {
-      posts[index].like.add(PostViewModel.myLike);
+      posts[index].likeUserID.add(RunningRepo.myLike);
       isLiked[index] = true;
     } else {
-      posts[index].like.removeWhere(
-          (likeUser) => likeUser.userID == PostViewModel.myLike.userID);
+      posts[index]
+          .likeUserID
+          .removeWhere((likeUser) => likeUser == RunningRepo.myLike);
       isLiked[index] = false;
     }
-    RunningRepo.updateLikeForPost(posts[index], posts[index].like);
+    RunningRepo.updateLikeForPost(posts[index], posts[index].likeUserID);
 
     notifyListeners();
   }

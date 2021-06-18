@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:daily_running/model/home/post.dart';
@@ -24,7 +25,8 @@ class PostViewModel extends ChangeNotifier {
   Uint8List startMarkerImage;
   Uint8List endMarkerImage;
   GoogleMapController mapController;
-
+  StreamSubscription myPostStreamSub;
+  StreamSubscription followingPostStreamSub;
   set followingPostLoading(val) {
     _followingPostLoading = val;
     notifyListeners();
@@ -43,12 +45,6 @@ class PostViewModel extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
-  static Like myLike = Like(
-    userID: RunningRepo.auth.currentUser.uid,
-    avatarUrl: RunningRepo.auth.currentUser.photoURL,
-    userName: RunningRepo.auth.currentUser.displayName,
-  );
-
   Set<Polyline> get polylines => _polylines;
 
   void disposeMap() {
@@ -63,6 +59,7 @@ class PostViewModel extends ChangeNotifier {
     followingPosts.clear();
     myPosts.clear();
 
+    isLikedFollowingPost.clear();
     isLikedMyPost.clear();
     selectedActivity = null;
     _followingPostLoading = true;
@@ -70,11 +67,8 @@ class PostViewModel extends ChangeNotifier {
     mapMarkers = [];
     _polylines.clear();
     if (mapController != null) mapController.dispose();
-    myLike = Like(
-      userID: RunningRepo.auth.currentUser.uid,
-      avatarUrl: RunningRepo.auth.currentUser.photoURL,
-      userName: RunningRepo.auth.currentUser.displayName,
-    );
+    myPostStreamSub.cancel();
+    followingPostStreamSub.cancel();
   }
 
   void createPolyline(List<LatLng> polylineCoordinates) {
@@ -151,27 +145,27 @@ class PostViewModel extends ChangeNotifier {
   void toggleLike(index, PostType type) async {
     if (type == PostType.Me) {
       if (!isLikedMyPost[index]) {
-        myPosts[index].like.add(myLike);
+        myPosts[index].likeUserID.add(RunningRepo.myLike);
         isLikedMyPost[index] = true;
       } else {
         myPosts[index]
-            .like
-            .removeWhere((likeUser) => likeUser.userID == myLike.userID);
+            .likeUserID
+            .removeWhere((likeUser) => likeUser == RunningRepo.myLike);
         isLikedMyPost[index] = false;
       }
-      RunningRepo.updateLikeForPost(myPosts[index], myPosts[index].like);
+      RunningRepo.updateLikeForPost(myPosts[index], myPosts[index].likeUserID);
     } else {
       if (!isLikedFollowingPost[index]) {
-        followingPosts[index].like.add(myLike);
+        followingPosts[index].likeUserID.add(RunningRepo.myLike);
         isLikedFollowingPost[index] = true;
       } else {
         followingPosts[index]
-            .like
-            .removeWhere((likeUser) => likeUser.userID == myLike.userID);
+            .likeUserID
+            .removeWhere((likeUser) => likeUser == RunningRepo.myLike);
         isLikedFollowingPost[index] = false;
       }
       RunningRepo.updateLikeForPost(
-          followingPosts[index], followingPosts[index].like);
+          followingPosts[index], followingPosts[index].likeUserID);
     }
     notifyListeners();
   }
@@ -192,15 +186,14 @@ class PostViewModel extends ChangeNotifier {
   Future<void> getMyPost() async {
     var stream = RunningRepo.getUserPostChanges();
     myPosts.clear();
-    //todo bỏ comment dòng này
     checkExistMyPostData();
-    await for (var posts in stream) {
+    myPostStreamSub = stream.listen((posts) {
       if (myPosts.isEmpty) {
         myPosts.addAll(posts);
         isLikedMyPost = myPosts
             .map(
-              (post) => post.like.any((userLiked) =>
-                  userLiked.userID == RunningRepo.auth.currentUser.uid),
+              (post) => post.likeUserID.any(
+                  (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
             )
             .toList();
       } else {
@@ -217,12 +210,12 @@ class PostViewModel extends ChangeNotifier {
       }
       isLikedMyPost = myPosts
           .map(
-            (post) => post.like.any((userLiked) =>
-                userLiked.userID == RunningRepo.auth.currentUser.uid),
+            (post) => post.likeUserID.any(
+                (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
       myPostLoading = false;
-    }
+    });
   }
 
   Future<void> getMyFollowingPost() async {
@@ -230,7 +223,7 @@ class PostViewModel extends ChangeNotifier {
     followingPosts.clear();
     //todo bỏ comment dòng này
     checkExistFollowingPostData();
-    await for (var posts in stream) {
+    followingPostStreamSub = stream.listen((posts) {
       if (followingPosts.isEmpty) {
         followingPosts.addAll(posts);
       } else {
@@ -246,11 +239,11 @@ class PostViewModel extends ChangeNotifier {
       }
       isLikedFollowingPost = followingPosts
           .map(
-            (post) => post.like.any((userLiked) =>
-                userLiked.userID == RunningRepo.auth.currentUser.uid),
+            (post) => post.likeUserID.any(
+                (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
       followingPostLoading = false;
-    }
+    });
   }
 }

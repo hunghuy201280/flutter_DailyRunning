@@ -26,6 +26,7 @@ class MainScreen extends StatelessWidget {
   final List<Widget> screens = [HomeScreen(), RecordScreen(), UserScreen()];
 
   void initLoading(BuildContext context, RunningUser currentUser) {
+    RunningRepo.resetData();
     Provider.of<UserViewModel>(context, listen: false)
         .setCurrentUserNoNotify(currentUser);
     Provider.of<UpdateInfoViewModel>(context, listen: false)
