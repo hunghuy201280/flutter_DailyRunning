@@ -1,7 +1,11 @@
+import 'package:daily_running/model/user/follow_detail_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+
+import '../follow_detail_screen.dart';
 
 class UserFollowCard extends StatelessWidget {
   @override
@@ -20,7 +24,13 @@ class UserFollowCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    //todo show follower
+                    Provider.of<FollowDetailViewModel>(context, listen: false)
+                        .onUserSelected("Người theo dõi", viewModel.follower);
+                    pushNewScreen(context,
+                        screen: FollowDetailScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
                   },
                   child: UserFollowNumColumn(
                     value: viewModel.follower.length,
@@ -33,7 +43,13 @@ class UserFollowCard extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    //todo show following
+                    Provider.of<FollowDetailViewModel>(context, listen: false)
+                        .onUserSelected("Đang theo dõi", viewModel.following);
+                    pushNewScreen(context,
+                        screen: FollowDetailScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
                   },
                   child: UserFollowNumColumn(
                     value: viewModel.following.length,

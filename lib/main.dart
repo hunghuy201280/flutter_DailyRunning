@@ -10,6 +10,7 @@ import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/ui/record/activity_view_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
+import 'package:daily_running/ui/user/follow_detail_screen.dart';
 import 'package:daily_running/ui/user/other_user/other_user_activity.dart';
 import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/ui/user/update_info_screen.dart';
@@ -25,6 +26,7 @@ import 'model/home/post_view_model.dart';
 import 'model/home/search/search_view_model.dart';
 import 'model/login/register_view_model.dart';
 import 'model/record/user_location.dart';
+import 'model/user/follow_detail_view_model.dart';
 import 'model/user/other_user/other_follow_view_model.dart';
 import 'model/user/other_user/other_profile_view_model.dart';
 import 'model/user/statistic_view_model.dart';
@@ -81,6 +83,8 @@ class DailyRunning extends StatelessWidget {
             create: (context) => CommentViewModel()),
         ChangeNotifierProvider<StepCounterViewModel>(
             create: (context) => StepCounterViewModel()),
+        ChangeNotifierProvider<FollowDetailViewModel>(
+            create: (context) => FollowDetailViewModel()),
         ChangeNotifierProxyProvider<OtherProfileViewModel,
                 OtherFollowViewModel>(
             create: (context) => OtherFollowViewModel(),
@@ -106,6 +110,7 @@ class DailyRunning extends StatelessWidget {
           CommentScreen.id: (context) => CommentScreen(),
           OtherUserScreen.id: (context) => OtherUserScreen(),
           OtherUserActivity.id: (context) => OtherUserActivity(),
+          FollowDetailScreen.id: (context) => FollowDetailScreen(),
         },
         initialRoute: FirstScreen.id,
       ),

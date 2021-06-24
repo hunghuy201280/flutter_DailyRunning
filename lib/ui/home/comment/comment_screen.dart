@@ -1,14 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/home/widgets/post_list_view.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
+import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -62,12 +65,31 @@ class CommentScreen extends StatelessWidget {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8),
-                                child: CommentItem(
-                                  ownerID: viewModel
-                                      .selectedPost.comment[index].ownerID,
-                                  content: viewModel
-                                      .selectedPost.comment[index].content,
-                                  time: '2d',
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (viewModel.selectedPost.comment[index]
+                                            .ownerID ==
+                                        RunningRepo.auth.currentUser.uid)
+                                      return;
+                                    Provider.of<OtherProfileViewModel>(context,
+                                            listen: false)
+                                        .onUserSelected(viewModel.selectedPost
+                                            .comment[index].ownerID);
+                                    pushNewScreen(
+                                      context,
+                                      screen: OtherUserScreen(),
+                                      pageTransitionAnimation:
+                                          PageTransitionAnimation.cupertino,
+                                      withNavBar: false,
+                                    );
+                                  },
+                                  child: CommentItem(
+                                    ownerID: viewModel
+                                        .selectedPost.comment[index].ownerID,
+                                    content: viewModel
+                                        .selectedPost.comment[index].content,
+                                    time: '2d',
+                                  ),
                                 ),
                               );
                             },

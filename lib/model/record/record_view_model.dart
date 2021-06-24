@@ -75,6 +75,7 @@ class RecordViewModel extends ChangeNotifier {
   void startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       timeWorkingInSec++;
+      notifyListeners();
     });
   }
 

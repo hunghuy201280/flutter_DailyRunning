@@ -3,14 +3,18 @@ import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/user/follow_detail_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/home/comment/comment_screen.dart';
+import 'package:daily_running/ui/user/follow_detail_screen.dart';
 import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:like_button/like_button.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -247,7 +251,7 @@ class PostView extends StatelessWidget {
             ),
             Row(
               children: [
-                PostBottomIcon(
+                /* PostBottomIcon(
                   iconName: index == -1
                       ? 'assets/images/ic_heart.svg'
                       : 'assets/images/ic_heart${(type == PostType.Me ? postViewModel.isLikedMyPost[index] : postViewModel.isLikedFollowingPost[index]) ? '_filled' : ''}.svg',
@@ -265,6 +269,60 @@ class PostView extends StatelessWidget {
                     Provider.of<PostViewModel>(context, listen: false)
                         .toggleLike(index, type);
                   },
+                ),*/
+                GestureDetector(
+                  onLongPress: () {
+                    Provider.of<FollowDetailViewModel>(context, listen: false)
+                        .onPostSelected(type == PostType.Me
+                            ? postViewModel.myPosts[index]
+                            : postViewModel.followingPosts[index]);
+                    pushNewScreen(context,
+                        screen: FollowDetailScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
+                  },
+                  child: LikeButton(
+                    likeCount: index == -1
+                        ? 0
+                        : type == PostType.Me
+                            ? postViewModel.myPosts[index].likeUserID.length
+                            : postViewModel
+                                .followingPosts[index].likeUserID.length,
+                    circleColor:
+                        CircleColor(start: Colors.yellow, end: Colors.blue),
+                    likeBuilder: (isLiked) {
+                      return Icon(
+                        isLiked
+                            ? FontAwesomeIcons.solidHeart
+                            : FontAwesomeIcons.heart,
+                        color: isLiked ? kPrimaryColor : kDividerColor,
+                      );
+                    },
+                    countBuilder: (int count, bool isLiked, String text) {
+                      var color = isLiked ? kPrimaryColor : kDividerColor;
+                      Widget result;
+                      result = Text(
+                        text,
+                        style: kPostTextStyle.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
+                      );
+                      return result;
+                    },
+                    isLiked: index == -1
+                        ? false
+                        : (type == PostType.Me
+                            ? postViewModel.isLikedMyPost[index]
+                            : postViewModel.isLikedFollowingPost[index]),
+                    onTap: (isLike) async {
+                      Provider.of<PostViewModel>(context, listen: false)
+                          .toggleLike(index, type);
+                      return !isLike;
+                    },
+                  ),
                 ),
                 SizedBox(
                   width: 22,
@@ -321,7 +379,7 @@ class PostBottomIcon extends StatelessWidget {
             highlightColor: Colors.grey[100],
             child: Container(
               width: 20,
-              height: 15,
+              height: 20,
               color: kSecondaryColor,
             ),
           )
@@ -330,7 +388,7 @@ class PostBottomIcon extends StatelessWidget {
               InkWell(
                 child: SvgPicture.asset(
                   iconName,
-                  height: 15,
+                  height: 20,
                 ),
                 onTap: onTap,
               ),
@@ -340,7 +398,7 @@ class PostBottomIcon extends StatelessWidget {
               Text(
                 value,
                 style: kPostTextStyle.copyWith(
-                  fontSize: 12,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   color: kDividerColor,
                 ),

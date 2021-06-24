@@ -3,14 +3,18 @@ import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/user/follow_detail_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/home/widgets/post_view.dart';
+import 'package:daily_running/ui/user/follow_detail_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:like_button/like_button.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -192,7 +196,7 @@ class OtherProfilePostView extends StatelessWidget {
             ),
             Row(
               children: [
-                PostBottomIcon(
+                /*PostBottomIcon(
                   iconName: index == -1
                       ? 'assets/images/ic_heart.svg'
                       : 'assets/images/ic_heart${otherProfileViewModel.isLiked[index] ? '_filled' : ''}.svg',
@@ -206,6 +210,53 @@ class OtherProfilePostView extends StatelessWidget {
                     Provider.of<OtherProfileViewModel>(context, listen: false)
                         .toggleLike(index);
                   },
+                ),*/
+                GestureDetector(
+                  onLongPress: () {
+                    Provider.of<FollowDetailViewModel>(context, listen: false)
+                        .onPostSelected(otherProfileViewModel.posts[index]);
+                    pushNewScreen(context,
+                        screen: FollowDetailScreen(),
+                        withNavBar: false,
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino);
+                  },
+                  child: LikeButton(
+                    likeCount: index == -1
+                        ? 0
+                        : otherProfileViewModel.posts[index].likeUserID.length,
+                    circleColor:
+                        CircleColor(start: Colors.yellow, end: Colors.blue),
+                    countBuilder: (int count, bool isLiked, String text) {
+                      var color = isLiked ? kPrimaryColor : kDividerColor;
+                      Widget result;
+                      result = Text(
+                        text,
+                        style: kPostTextStyle.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                        ),
+                      );
+                      return result;
+                    },
+                    likeBuilder: (isLiked) {
+                      return Icon(
+                        isLiked
+                            ? FontAwesomeIcons.solidHeart
+                            : FontAwesomeIcons.heart,
+                        color: isLiked ? kPrimaryColor : kDividerColor,
+                      );
+                    },
+                    isLiked: index == -1
+                        ? false
+                        : otherProfileViewModel.isLiked[index],
+                    onTap: (isLike) async {
+                      Provider.of<OtherProfileViewModel>(context, listen: false)
+                          .toggleLike(index);
+                      return !isLike;
+                    },
+                  ),
                 ),
                 SizedBox(
                   width: 22,
@@ -237,7 +288,7 @@ class OtherProfilePostView extends StatelessWidget {
   }
 }
 
-class PostBottomIcon extends StatelessWidget {
+/*class PostBottomIcon extends StatelessWidget {
   final String iconName;
   final String value;
   final bool isLoading;
@@ -284,4 +335,4 @@ class PostBottomIcon extends StatelessWidget {
             ],
           );
   }
-}
+}*/
