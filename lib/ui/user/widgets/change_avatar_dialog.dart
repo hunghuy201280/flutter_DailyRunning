@@ -11,15 +11,22 @@ class ChangeAvatarDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Container(
-        height: 200,
+        height: 250,
         width: 300,
         child: Column(
           children: [
             Expanded(
               child: Container(
-                color: kPrimaryColor,
+                decoration: BoxDecoration(
+                  color: kPrimaryColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Icon(
@@ -55,6 +62,7 @@ class ChangeAvatarDialog extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
                       onPressed: () {
@@ -75,7 +83,8 @@ class ChangeAvatarDialog extends StatelessWidget {
                           ),
                           Text(
                             'Camera',
-                            style: kBigTitleTextStyle,
+                            style: kBigTitleTextStyle.copyWith(
+                                color: kPrimaryColor),
                           ),
                         ],
                       ),
@@ -99,7 +108,8 @@ class ChangeAvatarDialog extends StatelessWidget {
                           ),
                           Text(
                             'Gallery',
-                            style: kBigTitleTextStyle,
+                            style: kBigTitleTextStyle.copyWith(
+                                color: kPrimaryColor),
                           ),
                         ],
                       ),

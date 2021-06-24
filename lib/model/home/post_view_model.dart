@@ -78,6 +78,7 @@ class PostViewModel extends ChangeNotifier {
       polylineId: PolylineId('poly'),
       color: kPrimaryColor,
       points: polylineCoordinates,
+      width: 3,
     );
 
     // add the constructed polyline as a set of points

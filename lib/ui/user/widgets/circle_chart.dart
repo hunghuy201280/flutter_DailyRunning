@@ -4,16 +4,16 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 class CircleChart extends StatelessWidget {
   final int val;
-  final double percent;
+  final int target;
 
-  const CircleChart({@required this.val, @required this.percent});
+  const CircleChart({@required this.val, @required this.target});
   @override
   Widget build(BuildContext context) {
     return CircularPercentIndicator(
       radius: 160.0,
       lineWidth: 8,
-      animation: true,
-      percent: percent,
+      animateFromLastPercent: true,
+      percent: val.toDouble() / target,
       center: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox.expand(

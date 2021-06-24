@@ -7,6 +7,7 @@ import 'package:daily_running/model/login/login_view_model.dart';
 import 'package:daily_running/model/login/register_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
+import 'package:daily_running/model/user/step_counter_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
@@ -18,6 +19,7 @@ import 'package:daily_running/ui/user/widgets/blur_loading.dart';
 import 'package:daily_running/ui/user/widgets/change_avatar_dialog.dart';
 import 'package:daily_running/ui/user/widgets/circle_chart.dart';
 import 'package:daily_running/ui/user/widgets/medal_item.dart';
+import 'package:daily_running/ui/user/widgets/set_target_dialog.dart';
 import 'package:daily_running/ui/user/widgets/statistic_card.dart';
 import 'package:daily_running/ui/user/widgets/statistic_widget.dart';
 import 'package:daily_running/ui/user/widgets/user_follow_card.dart';
@@ -52,7 +54,6 @@ class UserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(RunningRepo.getFirebaseUser().email);
     return SafeArea(
       child: Scaffold(
         body: ModalProgressHUD(
@@ -179,9 +180,29 @@ class UserScreen extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: CircleChart(
-                          val: 7000,
-                          percent: 0.7,
+                        child: GestureDetector(
+                          onTap: () async {
+                            int targetStep = await showDialog(
+                              context: context,
+                              builder: (context) => SetTargetDialog(
+                                defaultValue: Provider.of<StepCounterViewModel>(
+                                        context,
+                                        listen: false)
+                                    .target,
+                              ),
+                            );
+                            print(targetStep);
+                            if (targetStep == null) return;
+                            Provider.of<StepCounterViewModel>(context,
+                                    listen: false)
+                                .onTargetSelected(targetStep);
+                          },
+                          child: CircleChart(
+                            val: Provider.of<StepCounterViewModel>(context)
+                                .steps,
+                            target: Provider.of<StepCounterViewModel>(context)
+                                .target,
+                          ),
                         ),
                       ),
                       Text(

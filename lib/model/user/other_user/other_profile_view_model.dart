@@ -229,10 +229,10 @@ class OtherProfileViewModel extends ChangeNotifier {
     // create a Polyline instance
     // with an id, an RGB color and the list of LatLng pairs
     Polyline polyline = Polyline(
-      polylineId: PolylineId('poly'),
-      color: kPrimaryColor,
-      points: polylineCoordinates,
-    );
+        polylineId: PolylineId('poly'),
+        color: kPrimaryColor,
+        points: polylineCoordinates,
+        width: 3);
 
     // add the constructed polyline as a set of points
     // to the polyline set, which will eventually

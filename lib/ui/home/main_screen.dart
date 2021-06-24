@@ -2,6 +2,7 @@ import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/home/search/search_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
+import 'package:daily_running/model/user/step_counter_view_model.dart';
 import 'package:daily_running/model/user/update_info_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
@@ -34,7 +35,8 @@ class MainScreen extends StatelessWidget {
     Provider.of<StatisticViewModel>(context, listen: false).getStatistic();
     Provider.of<PostViewModel>(context, listen: false).getMyPost();
     Provider.of<PostViewModel>(context, listen: false).getMyFollowingPost();
-
+    Provider.of<StepCounterViewModel>(context, listen: false)
+        .initPlatformState();
     Provider.of<SearchViewModel>(context, listen: false).getSearchData();
   }
 

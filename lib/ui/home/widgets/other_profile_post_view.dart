@@ -3,7 +3,6 @@ import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
-import 'package:daily_running/model/user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';

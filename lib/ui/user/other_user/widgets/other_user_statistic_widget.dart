@@ -1,5 +1,4 @@
 import 'package:daily_running/model/record/record_view_model.dart';
-import 'package:daily_running/model/user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/ui/user/widgets/statistic_card.dart';

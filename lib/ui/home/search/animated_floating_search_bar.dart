@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:daily_running/model/home/search/search_view_model.dart';
-import 'package:daily_running/model/user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
 import 'package:daily_running/utils/constant.dart';

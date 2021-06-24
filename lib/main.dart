@@ -28,6 +28,7 @@ import 'model/record/user_location.dart';
 import 'model/user/other_user/other_follow_view_model.dart';
 import 'model/user/other_user/other_profile_view_model.dart';
 import 'model/user/statistic_view_model.dart';
+import 'model/user/step_counter_view_model.dart';
 import 'model/user/update_info_view_model.dart';
 import 'ui/authentication/register/register_screen.dart';
 import 'ui/user/gift/gift_screen.dart';
@@ -78,6 +79,8 @@ class DailyRunning extends StatelessWidget {
             create: (context) => OtherProfileViewModel()),
         ChangeNotifierProvider<CommentViewModel>(
             create: (context) => CommentViewModel()),
+        ChangeNotifierProvider<StepCounterViewModel>(
+            create: (context) => StepCounterViewModel()),
         ChangeNotifierProxyProvider<OtherProfileViewModel,
                 OtherFollowViewModel>(
             create: (context) => OtherFollowViewModel(),

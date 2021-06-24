@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:async/async.dart' as FlutterAsync;
 
@@ -23,12 +25,50 @@ class RunningRepo {
   static FirebaseAuth get auth => _auth;
   static Uuid uuid = Uuid();
   static String myLike = RunningRepo.auth.currentUser.uid;
+  static final normalDateFormat = DateFormat("dd-MM-yyyy");
 
   static void resetData() {
     _firestore = FirebaseFirestore.instance;
     _auth = FirebaseAuth.instance;
     _fbAuth = FacebookAuth.instance;
     myLike = RunningRepo.auth.currentUser.uid;
+  }
+
+  static void updateStep(int newStep) {
+    _firestore
+        .collection("step")
+        .doc(_auth.currentUser.uid)
+        .collection("daily_step")
+        .doc(normalDateFormat.format(DateTime.now()))
+        .set({"step": newStep});
+  }
+
+  static Future<int> getStep() async {
+    var doc = await _firestore
+        .collection("step")
+        .doc(_auth.currentUser.uid)
+        .collection("daily_step")
+        .doc(normalDateFormat.format(DateTime.now()))
+        .get();
+    int step = 0;
+    if (doc.exists) step = doc.data()["step"];
+    return step;
+  }
+
+  static Future<int> getTarget() async {
+    var doc =
+        await _firestore.collection("step").doc(_auth.currentUser.uid).get();
+    int target = 2000;
+    if (doc.exists) target = doc.data()["target"];
+    return target;
+  }
+
+  static Future<void> setTarget(int target) async {
+    print("update target $target");
+    await _firestore
+        .collection("step")
+        .doc(_auth.currentUser.uid)
+        .set({"target": target});
   }
 
   static Stream<List<RunningUser>> getSearchData() async* {
