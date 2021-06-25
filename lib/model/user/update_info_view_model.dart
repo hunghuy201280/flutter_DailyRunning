@@ -53,14 +53,14 @@ class UpdateInfoViewModel extends ChangeNotifier {
 
   void onUpdateClick(void Function(String result) onComplete) async {
     updateUser.displayName = nameController.text;
-    if (!kPersonNameRegex.hasMatch(updateUser.displayName)) {
+    /*   if (!kPersonNameRegex.hasMatch(updateUser.displayName)) {
       onComplete('Tên người dùng không hợp lệ!');
       buttonController.error();
       await Future.delayed(Duration(seconds: 2));
       buttonController.reset();
 
       return;
-    }
+    }*/
     print('${updateUser.displayName}\n${updateUser.gender}'
         '\n${updateUser.dob}\n${updateUser.height}\n${updateUser.weight}');
 

@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:circular_reveal_animation/circular_reveal_animation.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,6 +1,5 @@
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/utils/constant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 

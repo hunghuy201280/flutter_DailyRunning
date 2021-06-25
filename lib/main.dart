@@ -7,7 +7,6 @@ import 'package:daily_running/ui/authentication/register/register_update_info_sc
 import 'package:daily_running/ui/home/comment/comment_screen.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/home/main_screen.dart';
-import 'package:daily_running/ui/record/activity_view_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
 import 'package:daily_running/ui/user/follow_detail_screen.dart';
@@ -25,7 +24,6 @@ import 'model/home/comment_view_model.dart';
 import 'model/home/post_view_model.dart';
 import 'model/home/search/search_view_model.dart';
 import 'model/login/register_view_model.dart';
-import 'model/record/user_location.dart';
 import 'model/user/follow_detail_view_model.dart';
 import 'model/user/other_user/other_follow_view_model.dart';
 import 'model/user/other_user/other_profile_view_model.dart';

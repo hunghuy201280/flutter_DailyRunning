@@ -46,11 +46,6 @@ class RegisterViewModel extends ChangeNotifier {
     return null;
   }
 
-  String personNameValidate(String name) {
-    if (!kPersonNameRegex.hasMatch(name)) return 'Tên không hợp lệ';
-    return null;
-  }
-
   String passwordValidate(String password) {
     if (!kPasswordRegex.hasMatch(password)) return 'Mật khẩu không hợp lệ';
     return null;
@@ -129,7 +124,6 @@ class RegisterViewModel extends ChangeNotifier {
         passwordController.text.isNotEmpty &&
         retypePasswordController.text.isNotEmpty) return true;
     if (emailValidate(emailController.text) == null &&
-        personNameValidate(displayNameController.text) == null &&
         passwordValidate(passwordController.text) == null &&
         passwordRetypeValidate(retypePasswordController.text) == null)
       return true;

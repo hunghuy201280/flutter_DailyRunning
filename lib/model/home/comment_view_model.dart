@@ -1,5 +1,4 @@
 import 'package:daily_running/model/home/post.dart';
-import 'package:daily_running/model/home/post_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
 import 'package:flutter/cupertino.dart';

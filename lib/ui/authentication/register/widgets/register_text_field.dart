@@ -12,7 +12,7 @@ class RegisterTextField extends StatelessWidget {
   const RegisterTextField({
     @required this.textController,
     @required this.title,
-    @required this.validator,
+    this.validator,
     this.onFieldSubmitted,
     this.focusNode,
     this.isPassword = false,

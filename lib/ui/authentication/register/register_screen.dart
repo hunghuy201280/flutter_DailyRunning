@@ -60,9 +60,6 @@ class RegisterScreen extends StatelessWidget {
                                     listen: false)
                                 .displayNameController,
                             title: 'Tên hiển thị',
-                            validator: Provider.of<RegisterViewModel>(context,
-                                    listen: false)
-                                .personNameValidate,
                             onFieldSubmitted: (text) =>
                                 emailFocusNode.requestFocus(),
                           ),
