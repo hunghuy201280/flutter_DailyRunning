@@ -90,10 +90,13 @@ class OtherUserScreen extends StatelessWidget {
                         child: OtherUserFollowCard(),
                       ),
                       OutlinedButton(
-                        onPressed: () {
-                          Provider.of<OtherProfileViewModel>(context,
-                                  listen: false)
-                              .onFollowClick();
+                        onPressed: () async {
+                          var isFollowed =
+                              await Provider.of<OtherProfileViewModel>(context,
+                                      listen: false)
+                                  .onFollowClick();
+                          if (isFollowed) {
+                          } else {}
                         },
                         style: OutlinedButton.styleFrom(
                           minimumSize: Size(200, 30),

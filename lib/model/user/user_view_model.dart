@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,8 @@ class UserViewModel extends ChangeNotifier {
   RunningUser _currentUser;
   final picker = ImagePicker();
   bool _isLoading = false;
+  StreamSubscription followerSub;
+  StreamSubscription followingSub;
   set currentUser(RunningUser user) {
     _currentUser = user;
     notifyListeners();
@@ -68,39 +71,41 @@ class UserViewModel extends ChangeNotifier {
   void listenToFollowerChange() async {
     follower.clear();
     var stream = RunningRepo.getFollowerStream();
-    await for (var event in stream) {
+    if (followerSub != null) followerSub.cancel();
+    followerSub = stream.listen((event) {
       event.docChanges.forEach((change) {
         Follow followChange = Follow.fromJson(change.doc.data());
 
         if (change.type == DocumentChangeType.added) {
-          follower.add(followChange);
+          if (!follower.any((element) => element.uid == followChange.uid)) {
+            follower.add(followChange);
+          }
         } else if (change.type == DocumentChangeType.removed) {
-          int deletedIndex =
-              follower.indexWhere((element) => element.uid == followChange.uid);
-          if (deletedIndex >= 0) follower.removeAt(deletedIndex);
+          follower.removeWhere((element) => element.uid == followChange.uid);
         }
       });
       notifyListeners();
-    }
+    });
   }
 
   void listenToFollowingChange() async {
     following.clear();
     var stream = RunningRepo.getFollowingStream();
-    await for (var event in stream) {
+    if (followingSub != null) followingSub.cancel();
+    followingSub = stream.listen((event) {
       event.docChanges.forEach((change) {
         Follow followChange = Follow.fromJson(change.doc.data());
 
         if (change.type == DocumentChangeType.added) {
-          following.add(followChange);
+          if (!following.any((element) => element.uid == followChange.uid)) {
+            following.add(followChange);
+          }
         } else if (change.type == DocumentChangeType.removed) {
-          int deletedIndex = following
-              .indexWhere((element) => element.uid == followChange.uid);
-          if (deletedIndex > 0) following.removeAt(deletedIndex);
+          following.removeWhere((element) => element.uid == followChange.uid);
         }
       });
       notifyListeners();
-    }
+    });
   }
   //endregion
 }

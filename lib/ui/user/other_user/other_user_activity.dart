@@ -20,14 +20,28 @@ class OtherUserActivity extends StatelessWidget {
           backgroundColor: kPrimaryColor,
         ),
         backgroundColor: Colors.white,
-        body: ListView.builder(
-          itemBuilder: (context, index) {
-            return OtherProfilePostView(
-              index: index,
-            );
-          },
-          itemCount:
-              Provider.of<OtherProfileViewModel>(context).userActivities.length,
+        body: Stack(
+          children: [
+            ListView.builder(
+              itemBuilder: (context, index) {
+                return OtherProfilePostView(
+                  index: index,
+                );
+              },
+              itemCount: Provider.of<OtherProfileViewModel>(context)
+                  .userActivities
+                  .length,
+            ),
+            Visibility(
+              visible: Provider.of<OtherProfileViewModel>(context)
+                      .userActivities
+                      .length ==
+                  0,
+              child: Center(
+                child: Text("Không có hoạt động nào"),
+              ),
+            ),
+          ],
         ),
       ),
     );

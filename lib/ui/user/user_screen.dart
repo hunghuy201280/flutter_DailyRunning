@@ -10,6 +10,7 @@ import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/model/user/step_counter_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/repo/running_repository.dart';
+import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/user/gift/gift_screen.dart';
@@ -50,6 +51,8 @@ class UserScreen extends StatelessWidget {
     RunningRepo.auth.signOut();
     RunningRepo.googleSignIn.signOut();
     RunningRepo.fbAuth.logOut();
+    Navigator.pushNamedAndRemoveUntil(
+        context, FirstScreen.id, (route) => false);
   }
 
   @override

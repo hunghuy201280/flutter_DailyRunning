@@ -39,9 +39,9 @@ class OtherProfileViewModel extends ChangeNotifier {
   List<bool> isLiked = [];
 
   Future<void> onUserSelected(String uid) async {
+    print("Onuser slected called $uid");
     isLoading = true;
     selectedUser = await RunningRepo.getUserById(uid);
-    notifyListeners();
     posts = await RunningRepo.getUserPostById(uid);
     isFollowed = await RunningRepo.checkFollow(uid);
     isLiked = posts
@@ -183,7 +183,7 @@ class OtherProfileViewModel extends ChangeNotifier {
 //endregion
 
   //region follow
-  void onFollowClick() async {
+  Future<bool> onFollowClick() async {
     if (isFollowed) {
       isFollowed = false;
       await RunningRepo.unfollowUser(selectedUser.userID);
@@ -192,6 +192,7 @@ class OtherProfileViewModel extends ChangeNotifier {
       await RunningRepo.followUser(selectedUser);
     }
     notifyListeners();
+    return isFollowed;
   }
 
   void toggleLike(int index) {

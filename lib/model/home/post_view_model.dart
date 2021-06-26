@@ -215,6 +215,7 @@ class PostViewModel extends ChangeNotifier {
                 (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
+      myPosts.sort(Post.commpare);
       myPostLoading = false;
     });
   }
@@ -244,6 +245,7 @@ class PostViewModel extends ChangeNotifier {
                 (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
+      followingPosts.sort(Post.commpare);
       followingPostLoading = false;
     });
   }

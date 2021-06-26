@@ -1,4 +1,5 @@
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class Post {
@@ -9,6 +10,19 @@ class Post {
   String ownerID;
   String ownerAvatarUrl;
   String ownerName;
+
+  static int commpare(Post a, Post b) {
+    DateTime dateA =
+        RecordViewModel.activityDateFormat.parse(a.activity.dateCreated);
+    DateTime dateB =
+        RecordViewModel.activityDateFormat.parse(b.activity.dateCreated);
+    if (dateA.isBefore(dateB))
+      return 1;
+    else if (dateA.isAfter(dateB))
+      return -1;
+    else
+      return 0;
+  }
 
   Post({
     @required this.postID,
