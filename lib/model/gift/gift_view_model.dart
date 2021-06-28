@@ -30,7 +30,7 @@ class GiftViewModel extends ChangeNotifier {
     if (giftChangeSub != null) giftChangeSub.cancel();
     giftChangeSub = RunningRepo.getGiftStream().listen((event) {
       gifts.addAll(event);
-      print("gift added");
+      notifyListeners();
     });
   }
   void onAddClick() {

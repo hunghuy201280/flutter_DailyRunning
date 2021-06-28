@@ -46,8 +46,14 @@ class GiftScreen extends StatelessWidget {
           width: 350,
           child: ListView.builder(
             itemBuilder: (context, index) => GestureDetector(
-                child: GiftItem(
-                  data: Provider.of<GiftViewModel>(context).gifts[index],
+                child: Padding(
+                  padding: index !=
+                          (Provider.of<GiftViewModel>(context).gifts.length - 1)
+                      ? EdgeInsets.only(bottom: 16)
+                      : EdgeInsets.only(bottom: 80),
+                  child: GiftItem(
+                    data: Provider.of<GiftViewModel>(context).gifts[index],
+                  ),
                 ),
                 onTap: () {
                   Provider.of<GiftViewModel>(context, listen: false)

@@ -28,6 +28,20 @@ class RunningRepo {
     await _firestore.collection("gift").doc(gift.iD).set(gift.toJson());
   }
 
+  static Future<String> sendResetPasswordEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      if (e.code == "user-not-found") {
+        return "Không tìm thấy người dùng nào với email này!";
+      } else if (e.code == "invalid-email") return "Email không hợp lệ";
+
+      return null;
+    }
+  }
+
   static Future<String> postFile(
       {@required File imageFile,
       @required String folderPath,

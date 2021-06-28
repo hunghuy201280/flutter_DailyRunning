@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_daily_running_admin/model/login/login_view_model.dart';
 import 'package:flutter_daily_running_admin/repository/running_repo.dart';
 import 'package:flutter_daily_running_admin/ui/gift/gift_screen.dart';
+import 'package:flutter_daily_running_admin/ui/login/forget_password_screen.dart';
 import 'package:flutter_daily_running_admin/ui/login/widgets/custom_rounded_loading_button.dart';
 import 'package:flutter_daily_running_admin/utils/constant.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -82,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                     TextSpan(
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          //todo forgot password
+                          Navigator.pushNamed(context, ForgetPasswordScreen.id);
                         },
                       text: 'Quên mật khẩu ?',
                       style: TextStyle(
