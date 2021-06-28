@@ -1,0 +1,121 @@
+{
+  "project_info": {
+    "project_number": "925251155196",
+    "project_id": "flutter-daily-running",
+    "storage_bucket": "flutter-daily-running.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925251155196:android:84ccea232a894721f55379",
+        "android_client_info": {
+          "package_name": "vn.edu.uit.daily_running"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrnTc4m4lU3zfcSIHPwJGYBNIlGLSdi-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925251155196:android:5279c06c875abc0ff55379",
+        "android_client_info": {
+          "package_name": "vn.edu.uit.flutter_daily_running"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925251155196-0ovml63tesv0auefpk7sqiflmebaim4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.edu.uit.flutter_daily_running",
+            "certificate_hash": "c9e1c5e819b41c9048b0145a3b21bf3a5a2d8de7"
+          }
+        },
+        {
+          "client_id": "925251155196-gv3qetigki0p46ma5tq332lne0m1fqe4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.edu.uit.flutter_daily_running",
+            "certificate_hash": "5c86d8af53de67390b9a1ff9b56369d1aee7a95b"
+          }
+        },
+        {
+          "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrnTc4m4lU3zfcSIHPwJGYBNIlGLSdi-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:925251155196:android:d2164af2beadacc1f55379",
+        "android_client_info": {
+          "package_name": "vn.edu.uit.flutter_daily_running_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "925251155196-7387r28c1j6tb7192j83pbracdpb2s88.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.edu.uit.flutter_daily_running_admin",
+            "certificate_hash": "5c86d8af53de67390b9a1ff9b56369d1aee7a95b"
+          }
+        },
+        {
+          "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrnTc4m4lU3zfcSIHPwJGYBNIlGLSdi-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "925251155196-ghhe6c3411l1sno4fd29kpq6pgk6p8go.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
