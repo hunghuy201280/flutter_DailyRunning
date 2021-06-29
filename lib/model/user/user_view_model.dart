@@ -25,6 +25,11 @@ class UserViewModel extends ChangeNotifier {
     listenToFollowingChange();
   }
 
+  void exchangeGift(int point) {
+    currentUser.point -= point;
+    notifyListeners();
+  }
+
   set isLoading(val) {
     _isLoading = val;
     notifyListeners();

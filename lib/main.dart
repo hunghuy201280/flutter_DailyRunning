@@ -25,6 +25,7 @@ import 'model/home/post_view_model.dart';
 import 'model/home/search/search_view_model.dart';
 import 'model/login/register_view_model.dart';
 import 'model/user/follow_detail_view_model.dart';
+import 'model/user/gift/gift_view_model.dart';
 import 'model/user/other_user/other_follow_view_model.dart';
 import 'model/user/other_user/other_profile_view_model.dart';
 import 'model/user/statistic_view_model.dart';
@@ -60,7 +61,8 @@ class DailyRunning extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<RecordViewModel>(
             create: (context) => RecordViewModel()),
-        ChangeNotifierProvider<LoginViewModel>(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider<LoginViewModel>(
+            create: (context) => LoginViewModel()),
         ChangeNotifierProvider<RegisterViewModel>(
             create: (context) => RegisterViewModel()),
         ChangeNotifierProvider<UserViewModel>(
@@ -88,6 +90,10 @@ class DailyRunning extends StatelessWidget {
             create: (context) => OtherFollowViewModel(),
             update: (context, otherProfileViewModel, otherFollowViewModel) =>
                 otherFollowViewModel..update(otherProfileViewModel)),
+        ChangeNotifierProxyProvider<UserViewModel, GiftViewModel>(
+            create: (context) => GiftViewModel(),
+            update: (context, userViewModel, giftViewModel) =>
+                giftViewModel..update(userViewModel)),
       ],
       child: MaterialApp(
         localizationsDelegates: [GlobalMaterialLocalizations.delegate],

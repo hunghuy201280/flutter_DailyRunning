@@ -1,18 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/user/gift/gift.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UserGiftItem extends StatelessWidget {
-  final ImageProvider image;
-  final String providerName;
-  final String giftDetail;
-  final int point;
+  final Gift data;
 
-  const UserGiftItem({
-    @required this.image,
-    @required this.providerName,
-    @required this.giftDetail,
-    @required this.point,
-  });
+  const UserGiftItem({@required this.data});
   @override
   Widget build(BuildContext context) {
     return InkResponse(
@@ -26,11 +21,24 @@ class UserGiftItem extends StatelessWidget {
           color: kConcreteColor,
           child: Column(
             children: [
-              SizedBox.fromSize(
-                size: Size(150, 130),
-                child: Image(
-                  image: image,
-                  fit: BoxFit.cover,
+              CachedNetworkImage(
+                imageUrl: data.photoUri,
+                imageBuilder: (context, imageProvider) => SizedBox.fromSize(
+                  size: Size(150, 130),
+                  child: Image(
+                    image: imageProvider,
+                    height: 130,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                placeholder: (context, _) => Shimmer.fromColors(
+                  child: Container(
+                    height: 130,
+                    width: 150,
+                    color: Colors.red,
+                  ),
+                  baseColor: kSecondaryColor,
+                  highlightColor: Colors.grey[100],
                 ),
               ),
               Expanded(
@@ -46,7 +54,7 @@ class UserGiftItem extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              providerName,
+                              data.providerName,
                               style: kTitleTextStyle.copyWith(
                                 color: kDoveGrayColor,
                                 fontSize: 12,
@@ -54,7 +62,7 @@ class UserGiftItem extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              giftDetail,
+                              data.giftDetail,
                               style: kTitleTextStyle.copyWith(
                                 color: kMineShaftColor,
                                 fontSize: 12,
@@ -74,7 +82,7 @@ class UserGiftItem extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
-                                  point.toString(),
+                                  data.point.toString(),
                                   style: kTitleTextStyle.copyWith(
                                     color: kGoldenBellColor,
                                     fontSize: 10,

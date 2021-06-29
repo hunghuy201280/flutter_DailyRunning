@@ -6,6 +6,7 @@ import 'package:daily_running/model/home/search/search_view_model.dart';
 import 'package:daily_running/model/login/login_view_model.dart';
 import 'package:daily_running/model/login/register_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
+import 'package:daily_running/model/user/gift/gift_view_model.dart';
 import 'package:daily_running/model/user/statistic_view_model.dart';
 import 'package:daily_running/model/user/step_counter_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
@@ -253,20 +254,17 @@ class UserScreen extends StatelessWidget {
                       SizedBox.fromSize(
                         size: Size(double.infinity, 200),
                         child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => UserGiftItem(
-                                  image: AssetImage(
-                                    'assets/images/login_banner.jpg',
-                                  ),
-                                  providerName:
-                                      'Tên nhà cung cấp.........Tên nhà cung cấp.........',
-                                  giftDetail: 'Chi tiết ưu đãiChi tiết ưu đãi',
-                                  point: 200,
-                                ),
-                            separatorBuilder: (context, index) => SizedBox(
-                                  width: 30,
-                                ),
-                            itemCount: 10),
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => UserGiftItem(
+                            data: Provider.of<GiftViewModel>(context)
+                                .gifts[index],
+                          ),
+                          separatorBuilder: (context, index) => SizedBox(
+                            width: 30,
+                          ),
+                          itemCount:
+                              Provider.of<GiftViewModel>(context).gifts.length,
+                        ),
                       ),
                       SizedBox(
                         height: 30,

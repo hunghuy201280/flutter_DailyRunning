@@ -27,7 +27,7 @@ class RecordViewModel extends ChangeNotifier {
   bool isLoading = false;
   Uint8List startMarkerImage;
   Uint8List endMarkerImage;
-  static final activityDateFormat = DateFormat("dd/MM/yyyy hh:mm");
+  static final activityDateFormat = DateFormat("dd/MM/yyyy HH:mm");
 
   List<Marker> mapMarkers = [];
 

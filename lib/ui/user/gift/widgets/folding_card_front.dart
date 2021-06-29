@@ -1,16 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daily_running/model/user/gift/gift.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell/widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 class GiftFrontWidget extends StatelessWidget {
   const GiftFrontWidget({
     Key key,
     @required GlobalKey<SimpleFoldingCellState> foldingCellKey,
+    @required this.data,
   })  : _foldingCellKey = foldingCellKey,
         super(key: key);
 
   final GlobalKey<SimpleFoldingCellState> _foldingCellKey;
-
+  final Gift data;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -30,14 +34,24 @@ class GiftFrontWidget extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  color: Colors.red,
-                  child: SizedBox.fromSize(
+                child: CachedNetworkImage(
+                  imageUrl: data.photoUri,
+                  imageBuilder: (context, imageProvider) => SizedBox.fromSize(
                     size: Size(80, 80),
-                    child: Image.asset(
-                      'assets/images/drip_doge.png',
-                      fit: BoxFit.fitHeight,
+                    child: Image(
+                      image: imageProvider,
+                      height: 80,
+                      fit: BoxFit.cover,
                     ),
+                  ),
+                  placeholder: (context, _) => Shimmer.fromColors(
+                    child: Container(
+                      height: 80,
+                      width: 80,
+                      color: Colors.red,
+                    ),
+                    baseColor: kSecondaryColor,
+                    highlightColor: Colors.grey[100],
                   ),
                 ),
               ),
@@ -48,7 +62,7 @@ class GiftFrontWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Tên nhà cung cấp Tên nhà cung cấp Tên nhà cung cấp Tên nhà cung cấp ',
+                        data.providerName,
                         style: kRoboto500TextStyle.copyWith(
                           color: Colors.black54,
                           fontSize: 12,
@@ -57,7 +71,7 @@ class GiftFrontWidget extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        'Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi ',
+                        data.giftDetail,
                         style: kRoboto500TextStyle.copyWith(
                           color: kMineShaftColor,
                           fontSize: 14,
@@ -81,7 +95,7 @@ class GiftFrontWidget extends StatelessWidget {
                     height: 4,
                   ),
                   Text(
-                    '599',
+                    data.point.toString(),
                     style: kRoboto500TextStyle.copyWith(
                       color: kMineShaftColor,
                       fontSize: 14,

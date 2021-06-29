@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daily_running/model/home/comment_view_model.dart';
 import 'package:daily_running/model/record/activity.dart';
+import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
@@ -50,7 +51,8 @@ class CommentScreen extends StatelessWidget {
                           ownerName: viewModel.selectedPost.ownerName,
                           ownerID: viewModel.selectedPost.ownerID,
                           content: viewModel.selectedPost.activity.describe,
-                          time: '2d',
+                          time: CommentViewModel.getDuration(
+                              viewModel.selectedPost.activity.dateCreated),
                         ),
                         Divider(
                           thickness: 1,
@@ -88,7 +90,10 @@ class CommentScreen extends StatelessWidget {
                                         .selectedPost.comment[index].ownerID,
                                     content: viewModel
                                         .selectedPost.comment[index].content,
-                                    time: '2d',
+                                    time: CommentViewModel.getDuration(viewModel
+                                        .selectedPost
+                                        .comment[index]
+                                        .dateCreated),
                                   ),
                                 ),
                               );

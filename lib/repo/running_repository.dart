@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/home/post.dart';
 import 'package:daily_running/model/record/activity.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
+import 'package:daily_running/model/user/gift/gift.dart';
 import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +33,20 @@ class RunningRepo {
     _auth = FirebaseAuth.instance;
     _fbAuth = FacebookAuth.instance;
     myLike = RunningRepo.auth.currentUser.uid;
+  }
+
+  static Stream<List<Gift>> getGiftStream() async* {
+    var stream = _firestore.collection("gift").snapshots();
+    await for (var data in stream) {
+      yield data.docChanges.map((e) => Gift.fromJson(e.doc.data())).toList();
+    }
+  }
+
+  static Future exchangeGift(int point) async {
+    _firestore
+        .collection("users")
+        .doc(_auth.currentUser.uid)
+        .update({"point": point});
   }
 
   static void updateStep(int newStep) {

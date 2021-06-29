@@ -1,15 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cool_alert/cool_alert.dart';
+import 'package:daily_running/model/user/gift/gift.dart';
+import 'package:daily_running/model/user/gift/gift_view_model.dart';
+import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:folding_cell/folding_cell.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class GiftInnerWidget extends StatelessWidget {
   const GiftInnerWidget({
     Key key,
     @required GlobalKey<SimpleFoldingCellState> foldingCellKey,
+    @required this.data,
   })  : _foldingCellKey = foldingCellKey,
         super(key: key);
 
   final GlobalKey<SimpleFoldingCellState> _foldingCellKey;
+  final Gift data;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +41,25 @@ class GiftInnerWidget extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      color: Colors.red,
-                      child: SizedBox.fromSize(
+                    child: CachedNetworkImage(
+                      imageUrl: data.photoUri,
+                      imageBuilder: (context, imageProvider) =>
+                          SizedBox.fromSize(
                         size: Size(100, 100),
-                        child: Image.asset(
-                          'assets/images/drip_doge.png',
-                          fit: BoxFit.fitHeight,
+                        child: Image(
+                          image: imageProvider,
+                          height: 100,
+                          fit: BoxFit.cover,
                         ),
+                      ),
+                      placeholder: (context, _) => Shimmer.fromColors(
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          color: Colors.red,
+                        ),
+                        baseColor: kSecondaryColor,
+                        highlightColor: Colors.grey[100],
                       ),
                     ),
                   ),
@@ -50,7 +70,7 @@ class GiftInnerWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Tên nhà cung cấp Tên nhà cung cấp Tên nhà cung cấp Tên nhà cung cấp ',
+                            data.providerName,
                             style: kRoboto500TextStyle.copyWith(
                               color: Colors.black54,
                               fontSize: 16,
@@ -70,7 +90,7 @@ class GiftInnerWidget extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            '599',
+                            data.point.toString(),
                             style: kRoboto500TextStyle.copyWith(
                               color: kMineShaftColor,
                               fontSize: 16,
@@ -87,7 +107,7 @@ class GiftInnerWidget extends StatelessWidget {
                 color: Colors.grey,
               ),
               Text(
-                'Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi ',
+                data.giftDetail,
                 style: kRoboto500TextStyle.copyWith(
                   color: kMineShaftColor,
                   fontSize: 14,
@@ -101,7 +121,37 @@ class GiftInnerWidget extends StatelessWidget {
                 color: Colors.grey,
               ),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  String res =
+                      await Provider.of<GiftViewModel>(context, listen: false)
+                          .onExchangeClick(data);
+                  if (res == null) {
+                    Provider.of<UserViewModel>(context, listen: false)
+                        .exchangeGift(data.point);
+                    CoolAlert.show(
+                      context: context,
+                      type: CoolAlertType.success,
+                      backgroundColor: Colors.white,
+                      title: "Đổi quà thành công",
+                      confirmBtnColor: kPrimaryColor,
+                      width: 50,
+                      text:
+                          "Còn lại ${Provider.of<UserViewModel>(context, listen: false).currentUser.point} điểm Running",
+                      barrierDismissible: false,
+                    );
+                  } else {
+                    CoolAlert.show(
+                      context: context,
+                      type: CoolAlertType.error,
+                      backgroundColor: Colors.white,
+                      title: "Đổi quà thất bại",
+                      confirmBtnColor: kPrimaryColor,
+                      width: 50,
+                      text: res,
+                      barrierDismissible: false,
+                    );
+                  }
+                },
                 child: SizedBox(
                   width: double.infinity,
                   child: Text(
