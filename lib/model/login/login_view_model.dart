@@ -69,4 +69,16 @@ class LoginViewModel extends ChangeNotifier {
     await RunningRepo.handleFacebookSignIn();
     isLoading = false;
   }
+
+  void onResetPasswordClick(void Function(String) onComplete) async {
+    if (emailController.text.isEmpty) {
+      onComplete("Vui lòng nhập email");
+      return;
+    } else if (!kEmailRegex.hasMatch(emailController.text)) {
+      onComplete("Email không hợp lệ");
+      return;
+    }
+    String res = await RunningRepo.sendResetPasswordEmail(emailController.text);
+    onComplete(res);
+  }
 }

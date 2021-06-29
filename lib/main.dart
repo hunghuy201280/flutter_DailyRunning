@@ -2,6 +2,7 @@ import 'package:daily_running/model/login/login_view_model.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
 import 'package:daily_running/ui/authentication/first_screen.dart';
+import 'package:daily_running/ui/authentication/login/forgot_password_screen.dart';
 import 'package:daily_running/ui/authentication/login/login_screen.dart';
 import 'package:daily_running/ui/authentication/register/register_update_info_screen.dart';
 import 'package:daily_running/ui/home/comment/comment_screen.dart';
@@ -117,6 +118,7 @@ class DailyRunning extends StatelessWidget {
           OtherUserActivity.id: (context) => OtherUserActivity(),
           FollowDetailScreen.id: (context) => FollowDetailScreen(),
           ChangePasswordScreen.id: (context) => ChangePasswordScreen(),
+          ForgetPasswordScreen.id: (context) => ForgetPasswordScreen(),
         },
         initialRoute: FirstScreen.id,
       ),

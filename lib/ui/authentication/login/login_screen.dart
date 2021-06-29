@@ -13,6 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
+import 'forgot_password_screen.dart';
 import 'widgets/big_button.dart';
 import 'widgets/login_text_field.dart';
 import 'widgets/login_with_button.dart';
@@ -119,6 +120,22 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ]),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () =>
+                      Navigator.pushNamed(context, ForgetPasswordScreen.id),
+                  child: Text(
+                    "Quên mật khẩu?",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: kPrimaryColor,
+                      fontFamily: 'RobotoRegular',
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding:
