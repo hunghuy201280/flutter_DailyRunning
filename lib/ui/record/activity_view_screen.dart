@@ -48,31 +48,40 @@ class ActivityView extends StatelessWidget {
               ),
             ),
             opacity: 0.7,
-            child: SizedBox(
-              width: size.width,
-              height: size.height,
-              child: GoogleMap(
-                initialCameraPosition: cp,
-                mapType: MapType.normal,
-                markers: type == ActivityViewType.FromHomeScreen
-                    ? Set.of(Provider.of<PostViewModel>(context).mapMarkers)
-                    : Set.of(
-                        Provider.of<OtherProfileViewModel>(context).mapMarkers),
-                polylines: type == ActivityViewType.FromHomeScreen
-                    ? Provider.of<PostViewModel>(context).polylines
-                    : Provider.of<OtherProfileViewModel>(context).polylines,
-                onMapCreated: (mapController) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (type == ActivityViewType.FromHomeScreen)
-                      Provider.of<PostViewModel>(context, listen: false)
-                          .showActivityToMap(context, mapController);
-                    else {
-                      Provider.of<OtherProfileViewModel>(context, listen: false)
-                          .showActivityToMap(context, mapController);
-                    }
-                  });
-                },
-              ),
+            child: Stack(
+              children: [
+                SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: GoogleMap(
+                    initialCameraPosition: cp,
+                    mapType: MapType.normal,
+                    markers: type == ActivityViewType.FromHomeScreen
+                        ? Set.of(Provider.of<PostViewModel>(context).mapMarkers)
+                        : Set.of(Provider.of<OtherProfileViewModel>(context)
+                            .mapMarkers),
+                    polylines: type == ActivityViewType.FromHomeScreen
+                        ? Provider.of<PostViewModel>(context).polylines
+                        : Provider.of<OtherProfileViewModel>(context).polylines,
+                    onMapCreated: (mapController) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (type == ActivityViewType.FromHomeScreen)
+                          Provider.of<PostViewModel>(context, listen: false)
+                              .showActivityToMap(context, mapController);
+                        else {
+                          Provider.of<OtherProfileViewModel>(context,
+                                  listen: false)
+                              .showActivityToMap(context, mapController);
+                        }
+                      });
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: kAppNameTextBlack,
+                ),
+              ],
             ),
           ),
         ),

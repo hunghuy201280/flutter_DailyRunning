@@ -1,5 +1,6 @@
 import 'package:daily_running/model/user/other_user/other_profile_view_model.dart';
 import 'package:daily_running/model/user/running_user.dart';
+import 'package:daily_running/ui/user/gift/widgets/gift_detail_dialog.dart';
 import 'package:daily_running/ui/user/other_user/other_user_activity.dart';
 import 'package:daily_running/ui/user/other_user/widgets/other_user_follow_card.dart';
 import 'package:daily_running/ui/user/other_user/widgets/other_user_statistic_widget.dart';
@@ -9,6 +10,7 @@ import 'package:daily_running/ui/user/widgets/user_follow_card.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -149,8 +151,18 @@ class OtherUserScreen extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 scrollDirection: Axis.horizontal,
                                 itemCount: otherViewModel.medals.length,
-                                itemBuilder: (context, index) =>
-                                    otherViewModel.medals[index],
+                                itemBuilder: (context, index) {
+                                  final item = otherViewModel.medals[index];
+                                  return item.withTap(() => showAnimatedDialog(
+                                        barrierDismissible: true,
+                                        context: context,
+                                        builder: (context) => GiftDetailDialog(
+                                          data: item,
+                                        ),
+                                        animationType: DialogTransitionType
+                                            .slideFromBottom,
+                                      ));
+                                },
                                 separatorBuilder: (context, index) => SizedBox(
                                   width: 40,
                                 ),

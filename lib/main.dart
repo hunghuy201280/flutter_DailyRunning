@@ -9,6 +9,7 @@ import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/home/main_screen.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/record_screen.dart';
+import 'package:daily_running/ui/user/change_password_screen.dart';
 import 'package:daily_running/ui/user/follow_detail_screen.dart';
 import 'package:daily_running/ui/user/other_user/other_user_activity.dart';
 import 'package:daily_running/ui/user/other_user/other_user_screen.dart';
@@ -115,6 +116,7 @@ class DailyRunning extends StatelessWidget {
           OtherUserScreen.id: (context) => OtherUserScreen(),
           OtherUserActivity.id: (context) => OtherUserActivity(),
           FollowDetailScreen.id: (context) => FollowDetailScreen(),
+          ChangePasswordScreen.id: (context) => ChangePasswordScreen(),
         },
         initialRoute: FirstScreen.id,
       ),

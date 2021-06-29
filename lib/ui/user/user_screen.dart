@@ -15,6 +15,7 @@ import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/ui/authentication/login/widgets/big_button.dart';
 import 'package:daily_running/ui/home/home_screen.dart';
 import 'package:daily_running/ui/user/gift/gift_screen.dart';
+import 'package:daily_running/ui/user/gift/widgets/gift_detail_dialog.dart';
 import 'package:daily_running/ui/user/update_info_screen.dart';
 import 'package:daily_running/ui/user/widgets/avatar_view.dart';
 import 'package:daily_running/ui/user/widgets/blur_loading.dart';
@@ -30,6 +31,7 @@ import 'package:daily_running/utils/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,18 +44,18 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 class UserScreen extends StatelessWidget {
   static String id = 'UserScreen';
 
-  void onLogOutCleanUp(BuildContext context) {
+  static void onLogOutCleanUp(BuildContext context) {
     Provider.of<PostViewModel>(context, listen: false).resetData();
     Provider.of<LoginViewModel>(context, listen: false).reset();
     Provider.of<RegisterViewModel>(context, listen: false).reset();
     Provider.of<RecordViewModel>(context, listen: false).resetData();
     Provider.of<StatisticViewModel>(context, listen: false).resetData();
     Provider.of<SearchViewModel>(context, listen: false).resetData();
+    Provider.of<UserViewModel>(context, listen: false).reset();
     RunningRepo.auth.signOut();
     RunningRepo.googleSignIn.signOut();
     RunningRepo.fbAuth.logOut();
-    Navigator.pushNamedAndRemoveUntil(
-        context, FirstScreen.id, (route) => false);
+    Navigator.popUntil(context, ModalRoute.withName(FirstScreen.id));
   }
 
   @override
@@ -170,9 +172,20 @@ class UserScreen extends StatelessWidget {
                           itemCount: Provider.of<StatisticViewModel>(context)
                               .medals
                               .length,
-                          itemBuilder: (context, index) =>
-                              Provider.of<StatisticViewModel>(context)
-                                  .medals[index],
+                          itemBuilder: (context, index) {
+                            final item =
+                                Provider.of<StatisticViewModel>(context)
+                                    .medals[index];
+                            return item.withTap(() => showAnimatedDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) => GiftDetailDialog(
+                                    data: item,
+                                  ),
+                                  animationType:
+                                      DialogTransitionType.slideFromBottom,
+                                ));
+                          },
                           separatorBuilder: (context, index) => SizedBox(
                             width: 40,
                           ),

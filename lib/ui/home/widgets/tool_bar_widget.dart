@@ -88,6 +88,16 @@ class ToolBarTitle extends StatelessWidget {
   const ToolBarTitle(
       {@required this.shrinkOffset, @required this.expandedHeight});
 
+  String getGreet() {
+    int now = DateTime.now().hour;
+    if (now >= 0 && now < 12)
+      return "Good morning, ";
+    else if (now >= 12 && now <= 18)
+      return "Good afternoon, ";
+    else
+      return "Good evening, ";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Opacity(
@@ -98,7 +108,7 @@ class ToolBarTitle extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              'Good morning,\n${Provider.of<UserViewModel>(context).currentUser.displayName}',
+              '${getGreet()}\n${Provider.of<UserViewModel>(context).currentUser.displayName}',
               style: TextStyle(
                 fontSize: 30 - shrinkOffset * 0.1,
                 fontFamily: 'SVG Avo',

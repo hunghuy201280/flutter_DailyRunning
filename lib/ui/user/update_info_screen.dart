@@ -1,13 +1,16 @@
 import 'package:daily_running/main.dart';
 import 'package:daily_running/model/user/update_info_view_model.dart';
 import 'package:daily_running/model/user/user_view_model.dart';
+import 'package:daily_running/repo/running_repository.dart';
 import 'package:daily_running/ui/authentication/register/widgets/custom_number_picker.dart';
 import 'package:daily_running/ui/authentication/register/widgets/custom_rounded_loading_button.dart';
 import 'package:daily_running/ui/authentication/register/widgets/date_picker.dart';
 import 'package:daily_running/ui/authentication/register/widgets/rounded_rect_radio.dart';
+import 'package:daily_running/ui/user/change_password_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -121,12 +124,33 @@ class UpdateInfoScreen extends StatelessWidget {
                   minValue: 30,
                   maxValue: 200,
                 ),
-                SizedBox(
-                  height: 20,
+                Visibility(
+                  visible: RunningRepo.isEmail(),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 18),
+                      child: GestureDetector(
+                        onTap: () {
+                          //TODO nav to change pass
+                          Navigator.pushNamed(context, ChangePasswordScreen.id);
+                        },
+                        child: Text(
+                          "Đổi mật khẩu",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: kPrimaryColor,
+                            fontFamily: 'RobotoRegular',
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                Center(child: kAppNameTextBlack),
-                SizedBox(
-                  height: 10,
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                  child: Center(child: kAppNameTextBlack),
                 ),
                 Center(
                   child: Text(

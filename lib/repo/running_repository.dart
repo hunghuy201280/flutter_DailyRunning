@@ -42,6 +42,27 @@ class RunningRepo {
     }
   }
 
+  static bool isEmail() {
+    return _auth.currentUser.providerData[0].providerId == "password";
+  }
+
+  static Future<String> changePassword(String newPass, String oldPass) async {
+    AuthCredential credential = EmailAuthProvider.credential(
+        email: _auth.currentUser.email, password: oldPass);
+    try {
+      await _auth.currentUser.reauthenticateWithCredential(credential);
+      await _auth.currentUser.updatePassword(newPass);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "wrong-password":
+          return "Sai mật khẩu";
+        default:
+          return e.code;
+      }
+    }
+  }
+
   static Future exchangeGift(int point) async {
     _firestore
         .collection("users")

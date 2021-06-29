@@ -25,6 +25,20 @@ class OtherProfileViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  static final List<String> medalNames = [
+    "Huy chương đồng",
+    "Huy chương bạc",
+    "Huy chương vàng",
+    "Huy chương đam mê",
+    "Huy chương vận động viên",
+  ];
+  static final List<String> medalDetails = [
+    "Bạn là một người tập chạy bộ để rèn luyện sức khỏe.",
+    "Bạn là một người có hứng thú chạy bộ.",
+    "Bạn là một người có sức khỏe và thể lực rất tốt.",
+    "Bạn là một người thực sự có niềm đam mê chạy bộ.",
+    "Bạn là một người có tình yêu mãnh liệt với chạy bộ.",
+  ];
   bool get isFollowed => _isFollowed;
 
   set isFollowed(val) {
@@ -140,7 +154,7 @@ class OtherProfileViewModel extends ChangeNotifier {
   void getMedal() async {
     medalAchieved = List.filled(5, false).toList();
     medals.clear();
-    double distance = distancesStatistic[2];
+    double distance = distancesStatistic[0];
     if (distance >= 1000) {
       medalAchieved = List.filled(5, true).toList();
     } else if (distance >= 500) {
@@ -160,12 +174,16 @@ class OtherProfileViewModel extends ChangeNotifier {
           MedalItem(
             image: AssetImage('assets/images/medal_${i + 1}.png'),
             onTap: () {},
+            name: medalNames[i],
+            detail: medalDetails[i],
           ),
         );
       } else {
         medals.add(MedalItem(
           image: AssetImage('assets/images/medal_${i + 1}_greyscale.png'),
           onTap: () {},
+          name: medalNames[i],
+          detail: medalDetails[i],
         ));
       }
     }

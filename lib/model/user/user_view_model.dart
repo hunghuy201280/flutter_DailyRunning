@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
 import 'package:daily_running/repo/running_repository.dart';
+import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,11 +13,35 @@ class UserViewModel extends ChangeNotifier {
   RunningUser _currentUser;
   final picker = ImagePicker();
   bool _isLoading = false;
+  TextEditingController crPassController = TextEditingController();
+  TextEditingController newPassController = TextEditingController();
+  TextEditingController newPassRetypeController = TextEditingController();
   StreamSubscription followerSub;
   StreamSubscription followingSub;
   set currentUser(RunningUser user) {
     _currentUser = user;
     notifyListeners();
+  }
+
+  void reset() {
+    crPassController.clear();
+    newPassController.clear();
+    newPassRetypeController.clear();
+  }
+
+  Future<String> onChangePasswordClick() async {
+    isLoading = true;
+    String crPass = crPassController.text;
+    String newPass = newPassController.text;
+    String newPassRetype = newPassRetypeController.text;
+    if (crPass.isEmpty || newPass.isEmpty || newPassRetype.isEmpty)
+      return "Vui lòng nhập đầy đủ thông tin";
+    if (!kPasswordRegex.hasMatch(newPass)) return "Mật khẩu mới không hợp lệ";
+    if (newPass != newPassRetype) return "Mật khẩu mới không trùng khớp";
+    if (newPass == crPass) return "Mật khẩu mới không được trùng mật khẩu cũ";
+    String res = await RunningRepo.changePassword(newPass, crPass);
+    isLoading = false;
+    return res;
   }
 
   void setCurrentUserNoNotify(RunningUser user) {

@@ -191,12 +191,6 @@ class PostViewModel extends ChangeNotifier {
     myPostStreamSub = stream.listen((posts) {
       if (myPosts.isEmpty) {
         myPosts.addAll(posts);
-        isLikedMyPost = myPosts
-            .map(
-              (post) => post.likeUserID.any(
-                  (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
-            )
-            .toList();
       } else {
         posts.forEach((changedPost) {
           int index =
@@ -209,13 +203,13 @@ class PostViewModel extends ChangeNotifier {
           }
         });
       }
+      myPosts.sort(Post.commpare);
       isLikedMyPost = myPosts
           .map(
             (post) => post.likeUserID.any(
                 (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
-      myPosts.sort(Post.commpare);
       myPostLoading = false;
     });
   }
@@ -239,13 +233,13 @@ class PostViewModel extends ChangeNotifier {
             followingPosts.add(changedPost);
         });
       }
+      followingPosts.sort(Post.commpare);
       isLikedFollowingPost = followingPosts
           .map(
             (post) => post.likeUserID.any(
                 (userLiked) => userLiked == RunningRepo.auth.currentUser.uid),
           )
           .toList();
-      followingPosts.sort(Post.commpare);
       followingPostLoading = false;
     });
   }
