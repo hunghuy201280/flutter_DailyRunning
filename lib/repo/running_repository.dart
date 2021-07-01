@@ -49,10 +49,12 @@ class RunningRepo {
     }
   }
 
-  static Stream<List<Gift>> getGiftStream() async* {
+  static Stream<List<DocumentChange<Map<String, dynamic>>>>
+      getGiftStream() async* {
     var stream = _firestore.collection("gift").snapshots();
     await for (var data in stream) {
-      yield data.docChanges.map((e) => Gift.fromJson(e.doc.data())).toList();
+      //yield data.docChanges.map((e) => Gift.fromJson(e.doc.data())).toList();
+      yield data.docChanges;
     }
   }
 

@@ -24,8 +24,28 @@ class FinishRecordScreen extends StatelessWidget {
         backgroundColor: kPrimaryColor,
       ),
       body: WillPopScope(
-        onWillPop: () async =>
-            Provider.of<RecordViewModel>(context, listen: false).resetData(),
+        onWillPop: () async {
+          bool res = false;
+          res = await CoolAlert.show(
+            context: context,
+            type: CoolAlertType.confirm,
+            backgroundColor: Colors.white,
+            title: "Hủy hoạt động",
+            confirmBtnColor: kPrimaryColor,
+            width: 50,
+            text: "Bạn có muốn hủy hoạt động hiện tại ?",
+            barrierDismissible: false,
+            onConfirmBtnTap: () {
+              Provider.of<RecordViewModel>(context, listen: false).resetData();
+
+              Navigator.pop(context, true);
+            },
+            confirmBtnText: "Có",
+            cancelBtnText: "Không",
+            onCancelBtnTap: () => Navigator.pop(context, false),
+          );
+          return res;
+        },
         child: ModalProgressHUD(
           inAsyncCall: Provider.of<RecordViewModel>(context).isLoading,
           progressIndicator: SpinKitChasingDots(
@@ -147,7 +167,29 @@ class FinishRecordScreen extends StatelessWidget {
                     children: [
                       SmollButton(
                         text: 'Hủy',
-                        onPress: () {},
+                        onPress: () async {
+                          bool res = false;
+                          res = await CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.confirm,
+                            backgroundColor: Colors.white,
+                            title: "Hủy hoạt động",
+                            confirmBtnColor: kPrimaryColor,
+                            width: 50,
+                            text: "Bạn có muốn hủy hoạt động hiện tại ?",
+                            barrierDismissible: false,
+                            onConfirmBtnTap: () {
+                              Provider.of<RecordViewModel>(context,
+                                      listen: false)
+                                  .resetData();
+                              Navigator.pop(context, true);
+                            },
+                            confirmBtnText: "Có",
+                            cancelBtnText: "Không",
+                            onCancelBtnTap: () => Navigator.pop(context, false),
+                          );
+                          if (res) Navigator.pop(context);
+                        },
                         backgroundColor: kInActiveTabbarColor,
                         textColor: kMineShaftColor,
                       ),

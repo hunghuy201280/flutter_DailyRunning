@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/ui/record/finish_record_screen.dart';
 import 'package:daily_running/ui/record/widgets/record_button_row.dart';
@@ -16,18 +17,38 @@ class RecordScreen extends StatelessWidget {
   static String id = 'RecordScreen';
   @override
   Widget build(BuildContext context) {
-    print('rebuild entire record');
     return SafeArea(
       child: Scaffold(
         body: WillPopScope(
-          onWillPop: () async =>
-              Provider.of<RecordViewModel>(context, listen: false).resetData(),
+          onWillPop: () async {
+            bool res = false;
+            res = await CoolAlert.show(
+              context: context,
+              type: CoolAlertType.confirm,
+              backgroundColor: Colors.white,
+              title: "Hủy hoạt động",
+              confirmBtnColor: kPrimaryColor,
+              width: 50,
+              text: "Bạn có muốn hủy hoạt động hiện tại ?",
+              barrierDismissible: false,
+              onConfirmBtnTap: () {
+                Provider.of<RecordViewModel>(context, listen: false)
+                    .resetData();
+
+                Navigator.pop(context, true);
+              },
+              confirmBtnText: "Có",
+              cancelBtnText: "Không",
+              onCancelBtnTap: () => Navigator.pop(context, false),
+            );
+            return res;
+          },
           child: Stack(
             children: [
               GoogleMapWidget(),
               TopSheetBar(),
               RunButton(),
-              Align(
+              /* Align(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: InkResponse(
@@ -44,7 +65,7 @@ class RecordScreen extends StatelessWidget {
                   ),
                 ),
                 alignment: Alignment.bottomLeft,
-              ),
+              ),*/
             ],
           ),
         ),
@@ -170,12 +191,45 @@ class TopSheetBar extends StatelessWidget {
                                             .togglePause(context);
                                       },
                                       onStopPress: () async {
-                                        await Provider.of<RecordViewModel>(
-                                                context,
-                                                listen: false)
-                                            .stopRunning();
-                                        Navigator.pushNamed(
-                                            context, FinishRecordScreen.id);
+                                        bool res = false;
+                                        res = await CoolAlert.show(
+                                          context: context,
+                                          type: CoolAlertType.confirm,
+                                          backgroundColor: Colors.white,
+                                          title: "Kết thúc hoạt động",
+                                          confirmBtnColor: kPrimaryColor,
+                                          width: 50,
+                                          text:
+                                              "Bạn có muốn kết thúc hoạt động hiện tại ?",
+                                          barrierDismissible: false,
+                                          onConfirmBtnTap: () {
+                                            Navigator.pop(context, true);
+                                          },
+                                          confirmBtnText: "Có",
+                                          cancelBtnText: "Không",
+                                          onCancelBtnTap: () =>
+                                              Navigator.pop(context, false),
+                                        );
+                                        if (res) {
+                                          if (Provider.of<RecordViewModel>(
+                                                  context,
+                                                  listen: false)
+                                              .polylineCoordinates
+                                              .isEmpty) {
+                                            Provider.of<RecordViewModel>(
+                                                    context,
+                                                    listen: false)
+                                                .resetData();
+                                            Navigator.pop(context);
+                                            return;
+                                          }
+                                          await Provider.of<RecordViewModel>(
+                                                  context,
+                                                  listen: false)
+                                              .stopRunning();
+                                          Navigator.pushNamed(
+                                              context, FinishRecordScreen.id);
+                                        }
                                       },
                                       onPausePress: () {
                                         Provider.of<RecordViewModel>(context,

@@ -29,7 +29,7 @@ class GiftInnerWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(
-            width: 1,
+            width: 2,
             color: kPrimaryColor,
           ),
         ),
@@ -113,9 +113,8 @@ class GiftInnerWidget extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
+              Spacer(),
               Divider(
                 thickness: 1,
                 color: Colors.grey,

@@ -93,7 +93,7 @@ class RecordViewModel extends ChangeNotifier {
     startTracking(context);
   }
 
-  bool resetData() {
+  void resetData() {
     isSave = false;
     markers = [];
     mapMarkers = [];
@@ -113,7 +113,6 @@ class RecordViewModel extends ChangeNotifier {
     if (mapController != null) mapController.dispose();
     cancelTracking();
     notifyListeners();
-    return true;
   }
 
   void cancelTracking() {

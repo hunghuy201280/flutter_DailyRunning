@@ -46,16 +46,18 @@ class GiftFoldingCell extends StatelessWidget {
     return Container(
       alignment: Alignment.topCenter,
       child: SimpleFoldingCell.create(
-          key: _foldingCellKey,
-          cellSize: Size(MediaQuery.of(context).size.width - 70, 120),
-          frontWidget: GiftFrontWidget(
-            foldingCellKey: _foldingCellKey,
-            data: data,
-          ),
-          innerWidget: GiftInnerWidget(
-            foldingCellKey: _foldingCellKey,
-            data: data,
-          )),
+        borderRadius: 10,
+        key: _foldingCellKey,
+        cellSize: Size(MediaQuery.of(context).size.width - 70, 140),
+        frontWidget: GiftFrontWidget(
+          foldingCellKey: _foldingCellKey,
+          data: data,
+        ),
+        innerWidget: GiftInnerWidget(
+          foldingCellKey: _foldingCellKey,
+          data: data,
+        ),
+      ),
     );
   }
 }

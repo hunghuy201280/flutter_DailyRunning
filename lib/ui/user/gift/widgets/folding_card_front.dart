@@ -24,7 +24,7 @@ class GiftFrontWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: BorderSide(
-            width: 1,
+            width: 2,
             color: kPrimaryColor,
           ),
         ),
