@@ -7,7 +7,9 @@ class LoginViewModel extends ChangeNotifier {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var passwordFocusNode = FocusNode();
-  var loginButtonController = RoundedLoadingButtonController();
+  var crPassController = TextEditingController();
+  var newPassController = TextEditingController();
+  var newPassRetypeController = TextEditingController();
   bool _isLoading = false;
 
   set isLoading(val) {
@@ -18,7 +20,25 @@ class LoginViewModel extends ChangeNotifier {
   void reset() {
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    loginButtonController = RoundedLoadingButtonController();
+    crPassController = TextEditingController();
+    newPassController = TextEditingController();
+    newPassRetypeController = TextEditingController();
+    passwordFocusNode = FocusNode();
+  }
+
+  Future<String> onChangePasswordClick() async {
+    isLoading = true;
+    String crPass = crPassController.text;
+    String newPass = newPassController.text;
+    String newPassRetype = newPassRetypeController.text;
+    if (crPass.isEmpty || newPass.isEmpty || newPassRetype.isEmpty)
+      return "Vui lòng nhập đầy đủ thông tin";
+    if (!kPasswordRegex.hasMatch(newPass)) return "Mật khẩu mới không hợp lệ";
+    if (newPass != newPassRetype) return "Mật khẩu mới không trùng khớp";
+    if (newPass == crPass) return "Mật khẩu mới không được trùng mật khẩu cũ";
+    String res = await RunningRepo.changePassword(newPass, crPass);
+    isLoading = false;
+    return res;
   }
 
   void onEmailDone(text) {
@@ -54,12 +74,7 @@ class LoginViewModel extends ChangeNotifier {
         result = "Bạn không có quyền admin";
     }
     onComplete(result);
-    if (result != null) {
-      loginButtonController.error();
-    } else {
-      loginButtonController.success();
-      reset();
-    }
+
     isLoading = false;
   }
 

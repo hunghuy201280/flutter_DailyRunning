@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_daily_running_admin/repository/running_repo.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,24 @@ class GiftViewModel extends ChangeNotifier {
   GiftViewModel() {
     if (giftChangeSub != null) giftChangeSub.cancel();
     giftChangeSub = RunningRepo.getGiftStream().listen((event) {
-      gifts.addAll(event);
+      event.forEach((element) {
+        Gift giftChange = Gift.fromJson(element.doc.data());
+        if (element.type == DocumentChangeType.added) {
+          gifts.add(giftChange);
+        } else if (element.type == DocumentChangeType.removed) {
+          int deletedIndex =
+              gifts.indexWhere((element) => element.iD == giftChange.iD);
+          if (deletedIndex > 0) {
+            gifts.removeAt(deletedIndex);
+          }
+        } else if (element.type == DocumentChangeType.modified) {
+          int updatedIndex =
+              gifts.indexWhere((element) => element.iD == giftChange.iD);
+          if (updatedIndex > 0) {
+            gifts[updatedIndex] = giftChange;
+          }
+        }
+      });
       notifyListeners();
     });
   }

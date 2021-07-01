@@ -24,6 +24,23 @@ class RunningRepo {
     _auth.signOut();
   }
 
+  static Future<String> changePassword(String newPass, String oldPass) async {
+    AuthCredential credential = EmailAuthProvider.credential(
+        email: _auth.currentUser.email, password: oldPass);
+    try {
+      await _auth.currentUser.reauthenticateWithCredential(credential);
+      await _auth.currentUser.updatePassword(newPass);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "wrong-password":
+          return "Sai mật khẩu";
+        default:
+          return e.code;
+      }
+    }
+  }
+
   static Future setGift(Gift gift) async {
     await _firestore.collection("gift").doc(gift.iD).set(gift.toJson());
   }
@@ -54,11 +71,16 @@ class RunningRepo {
     return dowUrl;
   }
 
-  static Stream<List<Gift>> getGiftStream() async* {
+  static Stream<List<DocumentChange<Map<String, dynamic>>>>
+      getGiftStream() async* {
     var stream = _firestore.collection("gift").snapshots();
     await for (var data in stream) {
-      yield data.docChanges.map((e) => Gift.fromJson(e.doc.data())).toList();
+      yield data.docChanges;
     }
+  }
+
+  static Future deleteGift(Gift gift) async {
+    await _firestore.collection("gift").doc(gift.iD).delete();
   }
 
   static Future<bool> checkAdmin(String email) async {
