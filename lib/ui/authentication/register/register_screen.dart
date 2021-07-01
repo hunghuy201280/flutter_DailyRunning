@@ -33,7 +33,7 @@ class RegisterScreen extends StatelessWidget {
               Container(
                 height: MediaQuery.of(context).size.height - 100,
                 decoration: BoxDecoration(
-                  color: kConcreteColor,
+                  color: Color(0xffF2F5FC),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25),
                     topRight: Radius.circular(25),

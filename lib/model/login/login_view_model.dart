@@ -20,6 +20,7 @@ class LoginViewModel extends ChangeNotifier {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     loginButtonController = RoundedLoadingButtonController();
+    passwordFocusNode = FocusNode();
   }
 
   void loginWithEmailAndPassword(void Function(String) onComplete) async {
@@ -37,7 +38,11 @@ class LoginViewModel extends ChangeNotifier {
     if (result != null) {
       loginButtonController.error();
     } else {
-      loginButtonController.success();
+      try {
+        loginButtonController.success();
+      } on Exception catch (e) {
+        loginButtonController.reset();
+      }
       reset();
     }
     isLoading = false;

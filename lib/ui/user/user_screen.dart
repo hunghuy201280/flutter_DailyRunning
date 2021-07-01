@@ -55,7 +55,11 @@ class UserScreen extends StatelessWidget {
     RunningRepo.auth.signOut();
     RunningRepo.googleSignIn.signOut();
     RunningRepo.fbAuth.logOut();
-    Navigator.popUntil(context, ModalRoute.withName(FirstScreen.id));
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute<void>(
+            builder: (BuildContext context) => FirstScreen()),
+        (e) => false);
   }
 
   @override
