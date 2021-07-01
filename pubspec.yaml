@@ -56,6 +56,8 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   geolocator: ^7.0.3
   flutter_animated_dialog: ^2.0.0
+  animated_splash_screen: ^1.1.0
+  introduction_screen: ^2.1.0
 
 
 dev_dependencies:

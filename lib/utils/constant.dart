@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 enum PostType { Me, Following }
 enum ActivityViewType { FromHomeScreen, FromFollowing }
+
 const kPrimaryColor = Color(0xff00A896);
 const kLightPrimaryColor = Color(0xff02C39A);
 const kMineShaftColor = Color(0xff333333);
@@ -94,3 +96,25 @@ const List<Widget> kStatisticTab = [
 
 const kLightImage =
     'https://firebasestorage.googleapis.com/v0/b/flutter-daily-running.appspot.com/o/light_image.png?alt=media&token=24c6a8b1-d807-4c02-a545-32649d4c8b58';
+const kOnboardingPageDecoration = PageDecoration(
+  titleTextStyle: TextStyle(
+    fontFamily: 'SVN Avo',
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    color: Colors.white,
+  ),
+  bodyTextStyle: TextStyle(
+    fontFamily: 'SVN Avo',
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+    color: Colors.white,
+  ),
+  imageFlex: 5,
+  bodyFlex: 1,
+  pageColor: Colors.transparent,
+  imageAlignment: Alignment.center,
+  imagePadding: EdgeInsets.zero,
+  descriptionPadding: EdgeInsets.zero,
+  footerPadding: EdgeInsets.zero,
+  titlePadding: EdgeInsets.zero,
+);
