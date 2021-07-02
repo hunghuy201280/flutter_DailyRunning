@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vn.edu.uit.flutter_daily_running_admin">
    <application
-        android:label="flutter_daily_running_admin"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Daily Running For Admin"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

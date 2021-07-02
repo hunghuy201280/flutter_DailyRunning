@@ -7,6 +7,7 @@ import 'package:flutter_daily_running_admin/ui/gift/gift_screen.dart';
 import 'package:flutter_daily_running_admin/ui/login/first_screen.dart';
 import 'package:flutter_daily_running_admin/ui/login/forget_password_screen.dart';
 import 'package:flutter_daily_running_admin/ui/login/login_screen.dart';
+import 'package:flutter_daily_running_admin/ui/splash/splash_screen.dart';
 import 'package:flutter_daily_running_admin/utils/constant.dart';
 import 'package:provider/provider.dart';
 
@@ -37,8 +38,9 @@ class DailyRunningAdmin extends StatelessWidget {
           FirstScreen.id: (context) => FirstScreen(),
           ForgetPasswordScreen.id: (context) => ForgetPasswordScreen(),
           ChangePasswordScreen.id: (context) => ChangePasswordScreen(),
+          SplashScreen.id: (context) => SplashScreen(),
         },
-        initialRoute: FirstScreen.id,
+        initialRoute: SplashScreen.id,
       ),
     );
   }
