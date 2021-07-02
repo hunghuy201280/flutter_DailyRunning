@@ -119,8 +119,6 @@ class PostView extends StatelessWidget {
                                 pushNewScreen(
                                   context,
                                   screen: OtherUserScreen(),
-                                  pageTransitionAnimation:
-                                      PageTransitionAnimation.cupertino,
                                   withNavBar: false,
                                 );
                               }

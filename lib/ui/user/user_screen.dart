@@ -55,11 +55,11 @@ class UserScreen extends StatelessWidget {
     RunningRepo.auth.signOut();
     RunningRepo.googleSignIn.signOut();
     RunningRepo.fbAuth.logOut();
-    Navigator.pushAndRemoveUntil(
+    /*Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute<void>(
             builder: (BuildContext context) => FirstScreen()),
-        (e) => false);
+        (e) => false);*/
   }
 
   @override

@@ -106,13 +106,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 color: Colors.white,
                 size: 40,
               ),
-              onDone: () => Navigator.pushNamed(context, FirstScreen.id),
+              onDone: () => Navigator.pushNamedAndRemoveUntil(
+                  context, FirstScreen.id, (route) => false),
               showSkipButton: true,
               skip: Text(
                 'Skip',
                 style: TextStyle(color: Colors.white),
               ),
-              onSkip: () => Navigator.pushNamed(context, FirstScreen.id),
+              onSkip: () => Navigator.pushNamedAndRemoveUntil(
+                  context, FirstScreen.id, (route) => false),
               dotsDecorator: getDotDecoration(),
               onChange: (index) {
                 if (index == 3)

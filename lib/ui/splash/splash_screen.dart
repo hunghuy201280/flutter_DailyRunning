@@ -15,10 +15,10 @@ class SplashScreen extends StatelessWidget {
     return AnimatedSplashScreen.withScreenFunction(
       splash: Image.asset(
         "assets/images/app_icon.png",
-        height: 80,
+        height: 100,
       ),
       backgroundColor: kPrimaryColor,
-      splashTransition: SplashTransition.scaleTransition,
+      splashTransition: SplashTransition.slideTransition,
       screenFunction: () async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         bool isFirstLaunch = (prefs.getBool('isFirstLaunch') ?? true);

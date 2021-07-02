@@ -4,7 +4,7 @@
 
     <application
 
-        android:label="daily_running"
+        android:label="Daily Running"
         android:icon="@mipmap/launcher_icon">
      <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyACDWbWOcUmCmnNx7t8-JQTag36c6W8knE"/>
