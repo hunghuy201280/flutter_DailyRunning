@@ -231,6 +231,7 @@ class RecordViewModel extends ChangeNotifier {
     _isPause = !_isPause;
     if (_isPause) {
       cancelTracking();
+      _currentSpeed = 0;
       timer.cancel();
     } else {
       startTimer();
