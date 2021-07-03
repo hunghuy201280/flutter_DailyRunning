@@ -8,6 +8,7 @@ import 'package:daily_running/model/record/record_view_model.dart';
 import 'package:daily_running/model/user/gift/gift.dart';
 import 'package:daily_running/model/user/other_user/follow.dart';
 import 'package:daily_running/model/user/running_user.dart';
+import 'package:daily_running/utils/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +20,16 @@ import 'package:async/async.dart' as FlutterAsync;
 
 class RunningRepo {
   static FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  static FirebaseAuth _auth = FirebaseAuth.instance;
   static FacebookAuth _fbAuth = FacebookAuth.instance;
   static AccessToken fbAccessToken;
   static FacebookAuth get fbAuth => _fbAuth;
-  static FirebaseAuth get auth => _auth;
+  static FirebaseAuth get auth => FirebaseAuth.instance;
   static Uuid uuid = Uuid();
   static String myLike = RunningRepo.auth.currentUser.uid;
   static final normalDateFormat = DateFormat("dd-MM-yyyy");
 
   static void resetData() {
     _firestore = FirebaseFirestore.instance;
-    _auth = FirebaseAuth.instance;
     _fbAuth = FacebookAuth.instance;
     myLike = RunningRepo.auth.currentUser.uid;
   }
@@ -59,15 +58,15 @@ class RunningRepo {
   }
 
   static bool isEmail() {
-    return _auth.currentUser.providerData[0].providerId == "password";
+    return auth.currentUser.providerData[0].providerId == "password";
   }
 
   static Future<String> changePassword(String newPass, String oldPass) async {
     AuthCredential credential = EmailAuthProvider.credential(
-        email: _auth.currentUser.email, password: oldPass);
+        email: auth.currentUser.email, password: oldPass);
     try {
-      await _auth.currentUser.reauthenticateWithCredential(credential);
-      await _auth.currentUser.updatePassword(newPass);
+      await auth.currentUser.reauthenticateWithCredential(credential);
+      await auth.currentUser.updatePassword(newPass);
       return null;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -82,14 +81,14 @@ class RunningRepo {
   static Future exchangeGift(int point) async {
     _firestore
         .collection("users")
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .update({"point": point});
   }
 
   static void updateStep(int newStep) {
     _firestore
         .collection("step")
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection("daily_step")
         .doc(normalDateFormat.format(DateTime.now()))
         .set({"step": newStep});
@@ -98,7 +97,7 @@ class RunningRepo {
   static Future<int> getStep() async {
     var doc = await _firestore
         .collection("step")
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection("daily_step")
         .doc(normalDateFormat.format(DateTime.now()))
         .get();
@@ -109,7 +108,7 @@ class RunningRepo {
 
   static Future<int> getTarget() async {
     var doc =
-        await _firestore.collection("step").doc(_auth.currentUser.uid).get();
+        await _firestore.collection("step").doc(auth.currentUser.uid).get();
     int target = 2000;
     if (doc.exists) target = doc.data()["target"];
     return target;
@@ -119,7 +118,7 @@ class RunningRepo {
     print("update target $target");
     await _firestore
         .collection("step")
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .set({"target": target});
   }
 
@@ -148,7 +147,7 @@ class RunningRepo {
     try {
       await _firestore
           .collection('post')
-          .doc(_auth.currentUser.uid)
+          .doc(auth.currentUser.uid)
           .collection('user_posts')
           .doc(post.postID)
           .set(post.toJson());
@@ -160,7 +159,7 @@ class RunningRepo {
   static Stream<List<Post>> getUserPost() async* {
     await for (var newPost in _firestore
         .collection('post')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('user_posts')
         .snapshots()) {
       yield newPost.docs.map((posts) => Post.fromJson(posts.data())).toList();
@@ -170,7 +169,7 @@ class RunningRepo {
   static Stream<List<Post>> getUserPostChanges() async* {
     await for (var newPost in _firestore
         .collection('post')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('user_posts')
         .snapshots()) {
       yield newPost.docChanges
@@ -260,7 +259,7 @@ class RunningRepo {
     try {
       await _firestore
           .collection('follow')
-          .doc(_auth.currentUser.uid)
+          .doc(auth.currentUser.uid)
           .collection('following')
           .doc(user.userID)
           .set(Follow(
@@ -270,9 +269,9 @@ class RunningRepo {
           .collection('follow')
           .doc(user.userID)
           .collection('follower')
-          .doc(_auth.currentUser.uid)
+          .doc(auth.currentUser.uid)
           .set(Follow(
-            uid: _auth.currentUser.uid,
+            uid: auth.currentUser.uid,
           ).toJson());
     } on Exception catch (e) {
       print(e.toString());
@@ -282,7 +281,7 @@ class RunningRepo {
   static Future unfollowUser(String uid) async {
     await _firestore
         .collection('follow')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('following')
         .doc(uid)
         .delete();
@@ -290,14 +289,14 @@ class RunningRepo {
         .collection('follow')
         .doc(uid)
         .collection('follower')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .delete();
   }
 
   static Future<bool> checkFollow(String uid) async {
     var res = await _firestore
         .collection('follow')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('following')
         .doc(uid)
         .get();
@@ -307,7 +306,7 @@ class RunningRepo {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getFollowerStream() {
     return _firestore
         .collection('follow')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('follower')
         .snapshots();
   }
@@ -315,7 +314,7 @@ class RunningRepo {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getFollowingStream() {
     return _firestore
         .collection('follow')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('following')
         .snapshots();
   }
@@ -332,7 +331,7 @@ class RunningRepo {
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserActivitiesStream() {
     return _firestore
         .collection('activity')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .collection('activities')
         .snapshots();
   }
@@ -362,7 +361,7 @@ class RunningRepo {
   static Future<void> addRunningPoint(RunningUser user, int point) async {
     _firestore
         .collection('users')
-        .doc(_auth.currentUser.uid)
+        .doc(auth.currentUser.uid)
         .update({"point": user.point + point});
   }
 
@@ -421,12 +420,13 @@ class RunningRepo {
     }
   }
 
-  static User getFirebaseUser() => _auth.currentUser;
+  static User getFirebaseUser() => FirebaseAuth.instance.currentUser;
+
   //endregion
   static Future signInFirebase(AuthCredential credential) async {
     try {
       final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+          await auth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // handle the error here
@@ -443,10 +443,15 @@ class RunningRepo {
 
   static Future<RunningUser> getUser() async {
     var snapshot =
-        await _firestore.collection('users').doc(_auth.currentUser.uid).get();
-    if (snapshot.exists)
-      return RunningUser.fromJson(snapshot.data());
-    else
+        await _firestore.collection('users').doc(auth.currentUser.uid).get();
+    if (snapshot.exists) {
+      RunningUser result = RunningUser.fromJson(snapshot.data());
+      if (result.userID == null || result.userID.isEmpty) {
+        result.userID = auth.currentUser.uid;
+        await upUserToFireStore(result);
+      }
+      return result;
+    } else
       return null;
   }
 
@@ -463,7 +468,7 @@ class RunningRepo {
     UserCredential credential;
     String result;
     try {
-      credential = await _auth.signInWithEmailAndPassword(
+      credential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -501,7 +506,7 @@ class RunningRepo {
 
   static Future updateUserInfo(RunningUser user) async {
     await upUserToFireStore(user);
-    await _auth.currentUser
+    await auth.currentUser
         .updateProfile(displayName: user.displayName, photoURL: user.avatarUri);
   }
 
@@ -519,9 +524,8 @@ class RunningRepo {
     UserCredential credential;
     String result;
     try {
-      credential = await _auth.createUserWithEmailAndPassword(
+      credential = await auth.createUserWithEmailAndPassword(
           email: user.email, password: password);
-      updateUserInfo(user);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
@@ -534,8 +538,8 @@ class RunningRepo {
     }
 
     if (credential != null) {
-      user.userID = credential.user.uid;
-      await upUserToFireStore(user);
+      user.userID = auth.currentUser.uid;
+      await updateUserInfo(user);
     }
     return Future.value(result);
   }
@@ -544,7 +548,7 @@ class RunningRepo {
     try {
       _firestore
           .collection('activity')
-          .doc(_auth.currentUser.uid)
+          .doc(auth.currentUser.uid)
           .collection('activities')
           .doc(activity.activityID)
           .set(activity.toJson());

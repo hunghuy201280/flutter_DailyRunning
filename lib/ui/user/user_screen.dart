@@ -44,7 +44,7 @@ import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 class UserScreen extends StatelessWidget {
   static String id = 'UserScreen';
 
-  static void onLogOutCleanUp(BuildContext context) {
+  static void onLogOutCleanUp(BuildContext context) async {
     Provider.of<PostViewModel>(context, listen: false).resetData();
     Provider.of<LoginViewModel>(context, listen: false).reset();
     Provider.of<RegisterViewModel>(context, listen: false).reset();
@@ -52,14 +52,17 @@ class UserScreen extends StatelessWidget {
     Provider.of<StatisticViewModel>(context, listen: false).resetData();
     Provider.of<SearchViewModel>(context, listen: false).resetData();
     Provider.of<UserViewModel>(context, listen: false).reset();
+
     RunningRepo.auth.signOut();
     RunningRepo.googleSignIn.signOut();
     RunningRepo.fbAuth.logOut();
-    /*Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute<void>(
-            builder: (BuildContext context) => FirstScreen()),
-        (e) => false);*/
+    try {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute<void>(
+              builder: (BuildContext context) => FirstScreen()),
+          (e) => false);
+    } on Exception catch (e) {}
   }
 
   @override

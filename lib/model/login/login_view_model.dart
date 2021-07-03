@@ -7,7 +7,6 @@ class LoginViewModel extends ChangeNotifier {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var passwordFocusNode = FocusNode();
-  var loginButtonController = RoundedLoadingButtonController();
   bool _isLoading = false;
 
   set isLoading(val) {
@@ -17,9 +16,9 @@ class LoginViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   void reset() {
+    _isLoading = false;
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    loginButtonController = RoundedLoadingButtonController();
     passwordFocusNode = FocusNode();
   }
 
@@ -35,16 +34,7 @@ class LoginViewModel extends ChangeNotifier {
     else
       result = await RunningRepo.signInWithEmailAndPassword(email, password);
     onComplete(result);
-    if (result != null) {
-      loginButtonController.error();
-    } else {
-      try {
-        loginButtonController.success();
-      } on Exception catch (e) {
-        loginButtonController.reset();
-      }
-      reset();
-    }
+    reset();
     isLoading = false;
   }
 
@@ -62,13 +52,13 @@ class LoginViewModel extends ChangeNotifier {
     passwordFocusNode.requestFocus();
   }
 
-  void onGoogleLoginClick() async {
+  Future onGoogleLoginClick() async {
     isLoading = true;
     await RunningRepo.handleGoogleSignIn();
     isLoading = false;
   }
 
-  void onFacebookSignInClick() async {
+  Future onFacebookSignInClick() async {
     isLoading = true;
 
     await RunningRepo.handleFacebookSignIn();

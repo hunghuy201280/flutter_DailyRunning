@@ -43,7 +43,6 @@ class RegisterUpdateInfo extends StatelessWidget {
               seconds: 3,
             ),
           );
-
           Navigator.pushNamedAndRemoveUntil(
               context, FirstScreen.id, (route) => false);
         } else {

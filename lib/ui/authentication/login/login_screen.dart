@@ -12,6 +12,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import 'forgot_password_screen.dart';
 import 'widgets/big_button.dart';
@@ -20,6 +21,8 @@ import 'widgets/login_with_button.dart';
 
 class LoginScreen extends StatelessWidget {
   static String id = 'LoginScreen';
+  final loginButtonController = RoundedLoadingButtonController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -77,23 +80,21 @@ class LoginScreen extends StatelessWidget {
                     //login click
                     Provider.of<LoginViewModel>(context, listen: false)
                         .loginWithEmailAndPassword((message) {
-                      if (message != null)
+                      if (message != null) {
                         CoolAlert.show(
                             context: context,
                             type: CoolAlertType.error,
                             text: 'Đăng nhập thất bại!\nLỗi: $message',
                             onConfirmBtnTap: () {
-                              Provider.of<LoginViewModel>(context,
-                                      listen: false)
-                                  .loginButtonController
-                                  .reset();
+                              loginButtonController.reset();
                               Navigator.of(context).pop();
                             });
+                      } else {
+                        loginButtonController.success();
+                      }
                     });
                   },
-                  controller:
-                      Provider.of<LoginViewModel>(context, listen: false)
-                          .loginButtonController,
+                  controller: loginButtonController,
                   horizontalPadding: 30,
                 ),
                 RichText(
