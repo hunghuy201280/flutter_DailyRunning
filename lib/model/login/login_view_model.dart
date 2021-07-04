@@ -6,7 +6,6 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 class LoginViewModel extends ChangeNotifier {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-  var passwordFocusNode = FocusNode();
   bool _isLoading = false;
 
   set isLoading(val) {
@@ -19,7 +18,6 @@ class LoginViewModel extends ChangeNotifier {
     _isLoading = false;
     emailController = TextEditingController();
     passwordController = TextEditingController();
-    passwordFocusNode = FocusNode();
   }
 
   void loginWithEmailAndPassword(void Function(String) onComplete) async {
@@ -46,10 +44,6 @@ class LoginViewModel extends ChangeNotifier {
   String emailValidator(text) {
     if (!kEmailRegex.hasMatch(text)) return 'Email không hợp lệ';
     return null;
-  }
-
-  void onEmailDone(text) {
-    passwordFocusNode.requestFocus();
   }
 
   Future onGoogleLoginClick() async {

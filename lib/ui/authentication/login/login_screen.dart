@@ -22,6 +22,7 @@ import 'widgets/login_with_button.dart';
 class LoginScreen extends StatelessWidget {
   static String id = 'LoginScreen';
   final loginButtonController = RoundedLoadingButtonController();
+  final passwordFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +59,7 @@ class LoginScreen extends StatelessWidget {
                   preIcon: RunningIcons.profile,
                   validator: Provider.of<LoginViewModel>(context, listen: false)
                       .emailValidator,
-                  onFieldSubmitted:
-                      Provider.of<LoginViewModel>(context, listen: false)
-                          .onEmailDone,
+                  onFieldSubmitted: (text) => passwordFocusNode.requestFocus(),
                 ),
                 LoginTextField(
                   textController:
@@ -69,8 +68,7 @@ class LoginScreen extends StatelessWidget {
                   label: 'Mật khẩu',
                   preIcon: RunningIcons.lock,
                   isPassword: true,
-                  focusNode: Provider.of<LoginViewModel>(context, listen: false)
-                      .passwordFocusNode,
+                  focusNode: passwordFocusNode,
                   validator: Provider.of<LoginViewModel>(context, listen: false)
                       .passwordValidator,
                 ),

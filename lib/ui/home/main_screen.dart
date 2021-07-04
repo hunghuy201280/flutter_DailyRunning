@@ -49,6 +49,7 @@ class MainScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
           RunningUser currentUser = snapshot.data;
           if (currentUser != null) {
+            print("current uid ${currentUser.userID}");
             initLoading(context, currentUser);
             return MyPersistentTabView(
                 controller: _controller,

@@ -231,7 +231,7 @@ class PostView extends StatelessWidget {
                                 .onActivitySelected(context, index, type),
                         child: Image(
                           image: imageProvider,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

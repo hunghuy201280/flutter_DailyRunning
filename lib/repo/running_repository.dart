@@ -448,7 +448,8 @@ class RunningRepo {
       RunningUser result = RunningUser.fromJson(snapshot.data());
       if (result.userID == null || result.userID.isEmpty) {
         result.userID = auth.currentUser.uid;
-        await upUserToFireStore(result);
+        await updateUserInfo(result);
+        result = await getUser();
       }
       return result;
     } else
