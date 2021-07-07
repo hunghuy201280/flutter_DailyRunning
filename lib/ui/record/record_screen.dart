@@ -122,7 +122,7 @@ class GoogleMapWidget extends StatelessWidget {
       mapType: MapType.normal,
       mapToolbarEnabled: false,
       initialCameraPosition:
-          Provider.of<RecordViewModel>(context).initialLocation,
+          CameraPosition(target: LatLng(10.8007, 106.6669), zoom: 14.47),
       myLocationEnabled: true,
       markers: Set.of(Provider.of<RecordViewModel>(context).mapMarkers),
       polylines: Provider.of<RecordViewModel>(context).polylines,

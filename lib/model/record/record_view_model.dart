@@ -31,8 +31,6 @@ class RecordViewModel extends ChangeNotifier {
 
   List<Marker> mapMarkers = [];
 
-  CameraPosition initialLocation =
-      CameraPosition(target: LatLng(10, 106), zoom: 14.47);
   GoogleMapController mapController;
 // this will hold the generated polylines
   Set<Polyline> _polylines = {};
@@ -122,6 +120,7 @@ class RecordViewModel extends ChangeNotifier {
   void setInitialCamera() async {
     var location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
+
     mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(

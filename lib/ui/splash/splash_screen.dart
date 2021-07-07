@@ -3,6 +3,7 @@ import 'package:daily_running/ui/authentication/first_screen.dart';
 import 'package:daily_running/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,10 +31,12 @@ class SplashScreen extends StatelessWidget {
           } else
             return FirstScreen();
         } else
-          return Center(
-            child: SpinKitCircle(
-              color: kPrimaryColor,
-              size: 50,
+          return Scaffold(
+            body: Center(
+              child: SpinKitCircle(
+                color: kPrimaryColor,
+                size: 50,
+              ),
             ),
           );
       },
